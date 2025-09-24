@@ -61,15 +61,19 @@ func (a *Application) Run() error {
 	go func() {
 		log.Printf("✅ Server is running at %s", a.config.ServerAddress)
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			log.Fatalf("Failed to start server: %v", err)
+			log.Fatalf("⛔️ Failed to start server: %v", err)
 		}
 	}()
 
 	<-quit
-	log.Printf("⚠️  Shutdown signal received ...")
+	log.Printf("⚠️ Shutdown signal received ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("⛔️ Server forced to shutdown: %v", err)
+	}
 
 	return nil
 }
