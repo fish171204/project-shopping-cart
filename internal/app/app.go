@@ -75,6 +75,8 @@ func (a *Application) Run() error {
 		log.Fatalf("⛔️ Server forced to shutdown: %v", err)
 	}
 
+	log.Println("🍺 Server exited gracefully")
+
 	return nil
 }
 
