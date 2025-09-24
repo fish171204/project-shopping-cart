@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"user-management-api/internal/utils"
 )
 
 type DatabaseConfig struct {
@@ -32,4 +33,8 @@ func NewConfig() *Config {
 			SSLMode:  utils.GetEnv("DB_SSLMODE", "disable"),
 		},
 	}
+}
+
+func (c *Config) DNS() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", c.DB.Host, c.DB.Port, c.DB.User, c.DB.Password, c.DB.DBName, c.DB.SSLMode)
 }
