@@ -4,6 +4,7 @@ import (
 	"user-management-api/internal/handler"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/routes"
+	v1routes "user-management-api/internal/routes/v1"
 	"user-management-api/internal/service"
 )
 
@@ -12,18 +13,10 @@ type UserModule struct {
 }
 
 func NewUserModule() *UserModule {
-	//Initialize repository
 	userRepo := repository.NewInMemoryUserRepository()
-
-	//Initialize service
 	userService := service.NewUserService(userRepo)
-
-	//Initialize handler
 	userHandler := handler.NewUserHandler(userService)
-
-	//Initialize routes
-	userRoutes := routes.NewUserRoutes(userHandler)
-
+	userRoutes := v1routes.NewUserRoutes(userHandler)
 	return &UserModule{routes: userRoutes}
 }
 
