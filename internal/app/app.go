@@ -63,6 +63,9 @@ func (a *Application) Run() error {
 		}
 	}()
 
+	<-quit
+	log.Printf("⚠️  Shutdown signal received ...")
+
 	return nil
 }
 
