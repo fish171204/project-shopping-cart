@@ -14,6 +14,7 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	r.Use(
 		middleware.AuthMiddleware(),
 		middleware.LoggerMiddleware(),
+		middleware.RecoveryMiddleware(),
 		middleware.ApiKeyMiddleware(),
 		middleware.RateLimiterMiddleware(),
 	)
