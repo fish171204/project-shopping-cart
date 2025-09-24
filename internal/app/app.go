@@ -56,9 +56,12 @@ func (a *Application) Run() error {
 	// syscall.SIGHUP --> Reload service
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 
-	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+	go func() {
+		log.Printf("✅ Server is running at %s", a.config.ServerAddress)
+		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
 
 	return nil
 }
