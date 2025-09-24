@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"net/http"
 	"user-management-api/internal/config"
 	"user-management-api/internal/routes"
 	"user-management-api/internal/validation"
@@ -41,7 +42,10 @@ func NewApplication(cfg *config.Config) *Application {
 }
 
 func (a *Application) Run() error {
-	return a.router.Run(a.config.ServerAddress)
+	&http.Server{
+		Addr:    a.config.ServerAddress,
+		Handler: a.router,
+	}
 }
 
 func getModuleRoutes(modules []Module) []routes.Route {
