@@ -45,15 +45,7 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 		params.Limit = 10
 	}
 
-	users, err := uh.service.GetAllUsers(params.Search, params.Page, params.Limit)
-	if err != nil {
-		utils.ResponseError(ctx, err)
-		return
-	}
-
-	userDTO := v1dto.MapUsersToDTO(users)
-
-	utils.ResponseSuccess(ctx, http.StatusOK, userDTO)
+	utils.ResponseSuccess(ctx, http.StatusOK, "")
 }
 
 func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
@@ -63,15 +55,7 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 		return
 	}
 
-	user, err := uh.service.GetUserByUUID(param.Uuid)
-	if err != nil {
-		utils.ResponseError(ctx, err)
-		return
-	}
-
-	userDTO := v1dto.MapUserToDTO(user)
-
-	utils.ResponseSuccess(ctx, http.StatusOK, &userDTO)
+	utils.ResponseSuccess(ctx, http.StatusOK, "")
 }
 
 // POST
@@ -82,17 +66,7 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 		return
 	}
 
-	user := input.MapCreateInputToModel()
-
-	createdUser, err := uh.service.CreateUsers(user)
-	if err != nil {
-		utils.ResponseError(ctx, err)
-		return
-	}
-
-	userDTO := v1dto.MapUserToDTO(createdUser)
-
-	utils.ResponseSuccess(ctx, http.StatusCreated, &userDTO)
+	utils.ResponseSuccess(ctx, http.StatusCreated, "")
 }
 
 // PUT
@@ -109,17 +83,7 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	user := input.MapUpdateInputToModel()
-
-	updatedUser, err := uh.service.UpdateUser(param.Uuid, user)
-	if err != nil {
-		utils.ResponseError(ctx, err)
-		return
-	}
-
-	userDTO := v1dto.MapUserToDTO(updatedUser)
-
-	utils.ResponseSuccess(ctx, http.StatusOK, &userDTO)
+	utils.ResponseSuccess(ctx, http.StatusOK, "")
 
 }
 
@@ -127,11 +91,6 @@ func (uh *UserHandler) DeleteUser(ctx *gin.Context) {
 	var params GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
-		return
-	}
-
-	if err := uh.service.DeleteUser(params.Uuid); err != nil {
-		utils.ResponseError(ctx, err)
 		return
 	}
 
