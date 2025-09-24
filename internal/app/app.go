@@ -42,10 +42,16 @@ func NewApplication(cfg *config.Config) *Application {
 }
 
 func (a *Application) Run() error {
-	&http.Server{
+	srv := &http.Server{
 		Addr:    a.config.ServerAddress,
 		Handler: a.router,
 	}
+
+	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+		log.Fatal("Failed to start server: %v", err)
+	}
+
+	return nil
 }
 
 func getModuleRoutes(modules []Module) []routes.Route {
