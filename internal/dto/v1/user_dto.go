@@ -31,38 +31,17 @@ type UpdateUserInput struct {
 }
 
 // Request
-func (input *CreateUserInput) MapCreateInputToModel() models.User {
-	return models.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Age:      input.Age,
-		Password: input.Password,
-		Status:   input.Status,
-		Level:    input.Level,
-	}
+func (input *CreateUserInput) MapCreateInputToModel() {
+
 }
 
-func (input *UpdateUserInput) MapUpdateInputToModel() models.User {
-	return models.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Age:      input.Age,
-		Password: input.Password,
-		Status:   input.Status,
-		Level:    input.Level,
-	}
+func (input *UpdateUserInput) MapUpdateInputToModel() {
+
 }
 
 // Response
 func MapUserToDTO(user models.User) *UserDTO {
-	return &UserDTO{
-		UUID:   user.UUID,
-		Name:   user.Name,
-		Email:  user.Email,
-		Age:    user.Age,
-		Status: mapStatusText(user.Status),
-		Level:  mapLevelText(user.Level),
-	}
+	return &UserDTO{}
 }
 
 func MapUsersToDTO(users []models.User) []UserDTO {
