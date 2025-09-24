@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 	"user-management-api/internal/config"
+	"user-management-api/internal/db/sqlc"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

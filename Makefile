@@ -17,6 +17,10 @@ exportdb:
 server:
 	go run .
 
+# Generate sqlc
+sqlc:
+	sqlc generate
+
 # Create a new migration (make migrate-create NAME=profiles)
 migrate-create:
 	migrate create -ext sql -dir $(MIGRATION_DIRS) -seq $(NAME)
@@ -45,4 +49,4 @@ migrate-force:
 migrate-drop:
 	migrate -path $(MIGRATION_DIRS) -database "$(CONN_STRING)" drop
 
-.PHONY: importdb exportdb server migrate-create migrate-up migrate-down migrate-force migrate-drop migrate-goto migrate-down-n
+.PHONY: importdb exportdb server migrate-create migrate-up migrate-down migrate-force migrate-drop migrate-goto migrate-down-n sqlc 
