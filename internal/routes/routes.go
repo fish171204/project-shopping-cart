@@ -14,8 +14,9 @@ type Route interface {
 
 func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	logPath := "../../internal/logs/http.log"
+	logRecoveryPath := "../../internal/logs/recovery.log"
 
-	logger := zerolog.New(&lumberjack.Logger{
+	httpLogger := zerolog.New(&lumberjack.Logger{
 		Filename:   logPath,
 		MaxSize:    1,    // MB
 		MaxBackups: 5,    // number of backup files
@@ -24,10 +25,19 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 		LocalTime:  true, // use local time in log
 	}).With().Timestamp().Logger()
 
+	recoveryLogger := zerolog.New(&lumberjack.Logger{
+		Filename:   logRecoveryPath,
+		MaxSize:    1,
+		MaxBackups: 5,
+		MaxAge:     5,
+		Compress:   true,
+		LocalTime:  true,
+	}).With().Timestamp().Logger()
+
 	r.Use(
 		middleware.AuthMiddleware(),
-		middleware.LoggerMiddleware(logger),
-		middleware.RecoveryMiddleware(),
+		middleware.LoggerMiddleware(httpLogger),
+		middleware.RecoveryMiddleware(recoveryLogger),
 		middleware.ApiKeyMiddleware(),
 		middleware.RateLimiterMiddleware(),
 	)

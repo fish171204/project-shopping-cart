@@ -4,9 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
 )
 
-func RecoveryMiddleware() gin.HandlerFunc {
+func RecoveryMiddleware(httpLogger zerolog.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		defer func() {
