@@ -1,9 +1,9 @@
-package handler
+package v1handler
 
 import (
 	"net/http"
 	"user-management-api/internal/dto"
-	"user-management-api/internal/service"
+	v1service "user-management-api/internal/service/v1"
 	"user-management-api/internal/utils"
 	"user-management-api/internal/validation"
 
@@ -11,7 +11,7 @@ import (
 )
 
 type UserHandler struct {
-	service service.UserService
+	service v1service.UserService
 }
 
 type GetUserByUuidParam struct {
@@ -24,7 +24,7 @@ type GetUsersParam struct {
 	Limit  int    `form:"limit" binding:"omitempty,gte=1,lte=100"`
 }
 
-func NewUserHandler(service service.UserService) *UserHandler {
+func NewUserHandler(service v1service.UserService) *UserHandler {
 	return &UserHandler{
 		service: service,
 	}
