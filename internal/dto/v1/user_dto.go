@@ -1,7 +1,5 @@
 package v1dto
 
-import "user-management-api/internal/models"
-
 // Data Transfer Object (DTO): chuyển dữ liệu ra response
 type UserDTO struct {
 	UUID   string `json:"uuid"`
@@ -37,22 +35,6 @@ func (input *CreateUserInput) MapCreateInputToModel() {
 
 func (input *UpdateUserInput) MapUpdateInputToModel() {
 
-}
-
-// Response
-func MapUserToDTO(user models.User) *UserDTO {
-	return &UserDTO{}
-}
-
-func MapUsersToDTO(users []models.User) []UserDTO {
-	dtos := make([]UserDTO, 0, len(users))
-
-	for _, user := range users {
-		dto := MapUserToDTO(user)
-		dtos = append(dtos, *dto)
-	}
-
-	return dtos
 }
 
 func mapStatusText(status int) string {
