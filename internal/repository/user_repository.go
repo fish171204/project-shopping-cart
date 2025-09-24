@@ -1,24 +1,24 @@
 package repository
 
-type InMemoryUserRepository struct {
+type SqlUserRepository struct {
 }
 
-func NewInMemoryUserRepository() UserRepository {
-	return &InMemoryUserRepository{}
+func NewSqlUserRepository() UserRepository {
+	return &SqlUserRepository{}
 }
 
 // GET
-func (ur *InMemoryUserRepository) FindAll() {}
+func (ur *SqlUserRepository) FindAll() {}
 
-func (ur *InMemoryUserRepository) FindByUUID(uuid string) {}
+func (ur *SqlUserRepository) FindByUUID(uuid string) {}
 
-func (ur *InMemoryUserRepository) FindByEmail(email string) {}
+func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
-func (ur *InMemoryUserRepository) Create() {}
+func (ur *SqlUserRepository) Create() {}
 
 // PUT
-func (ur *InMemoryUserRepository) Update(uuid string) {}
+func (ur *SqlUserRepository) Update(uuid string) {}
 
 // DELETE
-func (ur *InMemoryUserRepository) Delete(uuid string) {}
+func (ur *SqlUserRepository) Delete(uuid string) {}
