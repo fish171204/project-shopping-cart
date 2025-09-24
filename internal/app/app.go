@@ -1,11 +1,13 @@
 package app
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 	"user-management-api/internal/config"
 	"user-management-api/internal/routes"
 	"user-management-api/internal/validation"
@@ -65,6 +67,9 @@ func (a *Application) Run() error {
 
 	<-quit
 	log.Printf("⚠️  Shutdown signal received ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 
 	return nil
 }
