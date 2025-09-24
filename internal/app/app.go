@@ -3,6 +3,9 @@ package app
 import (
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"user-management-api/internal/config"
 	"user-management-api/internal/routes"
 	"user-management-api/internal/validation"
@@ -47,8 +50,11 @@ func (a *Application) Run() error {
 		Handler: a.router,
 	}
 
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-		log.Fatal("Failed to start server: %v", err)
+		log.Fatalf("Failed to start server: %v", err)
 	}
 
 	return nil
