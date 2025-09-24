@@ -1,4 +1,4 @@
-package dto
+package v1dto
 
 import "user-management-api/internal/models"
 

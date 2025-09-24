@@ -2,7 +2,7 @@ package v1handler
 
 import (
 	"net/http"
-	"user-management-api/internal/dto"
+	v1dto "user-management-api/internal/dto/v1"
 	v1service "user-management-api/internal/service/v1"
 	"user-management-api/internal/utils"
 	"user-management-api/internal/validation"
@@ -51,7 +51,7 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	userDTO := dto.MapUsersToDTO(users)
+	userDTO := v1dto.MapUsersToDTO(users)
 
 	utils.ResponseSuccess(ctx, http.StatusOK, userDTO)
 }
@@ -69,14 +69,14 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 		return
 	}
 
-	userDTO := dto.MapUserToDTO(user)
+	userDTO := v1dto.MapUserToDTO(user)
 
 	utils.ResponseSuccess(ctx, http.StatusOK, &userDTO)
 }
 
 // POST
 func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
-	var input dto.CreateUserInput
+	var input v1dto.CreateUserInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
@@ -90,7 +90,7 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 		return
 	}
 
-	userDTO := dto.MapUserToDTO(createdUser)
+	userDTO := v1dto.MapUserToDTO(createdUser)
 
 	utils.ResponseSuccess(ctx, http.StatusCreated, &userDTO)
 }
@@ -103,7 +103,7 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	var input dto.UpdateUserInput
+	var input v1dto.UpdateUserInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
@@ -117,7 +117,7 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	userDTO := dto.MapUserToDTO(updatedUser)
+	userDTO := v1dto.MapUserToDTO(updatedUser)
 
 	utils.ResponseSuccess(ctx, http.StatusOK, &userDTO)
 
