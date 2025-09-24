@@ -1,4 +1,4 @@
-package service
+package v1service
 
 import "user-management-api/internal/models"
 
