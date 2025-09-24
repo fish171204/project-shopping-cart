@@ -51,6 +51,9 @@ func (a *Application) Run() error {
 	}
 
 	quit := make(chan os.Signal, 1)
+	// syscall.SIGINT --> Ctrl + C
+	// syscall.SIGTERM --> Kill service
+	// syscall.SIGHUP --> Reload service
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
