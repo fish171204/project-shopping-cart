@@ -2,6 +2,7 @@ package routes
 
 import (
 	"user-management-api/internal/middleware"
+	"user-management-api/internal/utils"
 	"user-management-api/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -40,6 +41,7 @@ func newLoggerWithPath(path string, level string) *zerolog.Logger {
 		MaxBackups: 5,
 		MaxAge:     5,
 		Compress:   true,
+		IsDev:      utils.GetEnv("APP_EVN", "development"),
 	}
 
 	return logger.NewLogger(config)
