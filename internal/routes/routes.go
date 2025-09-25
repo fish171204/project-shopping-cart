@@ -19,11 +19,11 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	recoveryLogger := newLoggerWithPath("../../internal/logs/recovery.log", "warning")
 
 	r.Use(
+		middleware.RateLimiterMiddleware(),
 		middleware.AuthMiddleware(),
 		middleware.LoggerMiddleware(httpLogger),
 		middleware.RecoveryMiddleware(recoveryLogger),
 		middleware.ApiKeyMiddleware(),
-		middleware.RateLimiterMiddleware(),
 	)
 
 	v1api := r.Group("/api/v1")
