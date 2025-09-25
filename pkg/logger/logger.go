@@ -1,5 +1,9 @@
 package logger
 
+import (
+	"github.com/rs/zerolog"
+)
+
 type LoggerConfig struct {
 	Level      string
 	Filename   string
@@ -7,4 +11,11 @@ type LoggerConfig struct {
 	MaxBackups int
 	MaxAge     int
 	Compress   bool
+}
+
+func NewLogger(config LoggerConfig) *zerolog.Logger {
+
+	logger := zerolog.New().With().Timestamp().Logger()
+
+	return &logger
 }
