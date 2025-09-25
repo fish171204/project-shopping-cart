@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -33,4 +34,9 @@ func RecoveryMiddleware(recoveryLogger *zerolog.Logger) gin.HandlerFunc {
 
 		ctx.Next()
 	}
+}
+
+func ExtractFirstAppStackLine(stack []byte) string {
+	lines := bytes.Split(stack, []byte("\n"))
+
 }
