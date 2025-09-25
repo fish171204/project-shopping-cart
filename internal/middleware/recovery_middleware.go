@@ -40,7 +40,7 @@ func RecoveryMiddleware(recoveryLogger *zerolog.Logger) gin.HandlerFunc {
 	}
 }
 
-var stackLineRegex = regexp.MustCompile(`(.+\go:\d+)`)
+var stackLineRegex = regexp.MustCompile(`(.+\.go:\d+)`)
 
 func ExtractFirstAppStackLine(stack []byte) string {
 	lines := bytes.Split(stack, []byte("\n"))
