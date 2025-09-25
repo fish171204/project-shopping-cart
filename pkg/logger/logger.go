@@ -2,6 +2,7 @@ package logger
 
 import (
 	"io"
+	"os"
 	"time"
 
 	"github.com/natefinch/lumberjack"
@@ -15,6 +16,7 @@ type LoggerConfig struct {
 	MaxBackups int
 	MaxAge     int
 	Compress   bool
+	IsDev      string
 }
 
 func NewLogger(config LoggerConfig) *zerolog.Logger {
@@ -28,12 +30,16 @@ func NewLogger(config LoggerConfig) *zerolog.Logger {
 
 	var writer io.Writer
 
-	writer = &lumberjack.Logger{
-		Filename:   config.Filename,
-		MaxSize:    config.MaxSize,    // MB
-		MaxBackups: config.MaxBackups, // number of backup files
-		MaxAge:     config.MaxAge,     // days before deletion
-		Compress:   config.Compress,   // disabled by default (compress)
+	if config.IsDev == "development" {
+		writer = os.Stdout
+	} else {
+		writer = &lumberjack.Logger{
+			Filename:   config.Filename,
+			MaxSize:    config.MaxSize,    // MB
+			MaxBackups: config.MaxBackups, // number of backup files
+			MaxAge:     config.MaxAge,     // days before deletion
+			Compress:   config.Compress,   // disabled by default (compress)
+		}
 	}
 
 	logger := zerolog.New(writer).With().Timestamp().Logger()
