@@ -2,6 +2,7 @@ package logger
 
 import (
 	"io"
+	"time"
 
 	"github.com/natefinch/lumberjack"
 	"github.com/rs/zerolog"
@@ -17,6 +18,14 @@ type LoggerConfig struct {
 }
 
 func NewLogger(config LoggerConfig) *zerolog.Logger {
+	zerolog.TimeFieldFormat = time.RFC3339
+
+	lvl, err := zerolog.ParseLevel(config.Level)
+	if err != nil {
+		lvl = zerolog.InfoLevel
+	}
+	zerolog.SetGlobalLevel(lvl)
+
 	var writer io.Writer
 
 	writer = &lumberjack.Logger{
