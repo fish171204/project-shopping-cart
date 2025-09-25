@@ -33,7 +33,7 @@ func NewLogger(config LoggerConfig) *zerolog.Logger {
 	var writer io.Writer
 
 	if config.IsDev == "development" {
-		writer = os.Stdout
+		writer = PrettyJSONWriter{Writer: os.Stdout}
 	} else {
 		writer = &lumberjack.Logger{
 			Filename:   config.Filename,
