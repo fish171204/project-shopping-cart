@@ -51,6 +51,12 @@ func ExtractFirstAppStackLine(stack []byte) string {
 			!bytes.Contains(line, []byte("/debug/")) &&
 			!bytes.Contains(line, []byte("recovery_middleware.go")) {
 			cleanLine := strings.TrimSpace(string(line))
+			match := stackLineRegex.FindStringSubmatch(cleanLine)
+
+			if len(match) > 1 {
+				return match[1]
+			}
+
 			return cleanLine
 		}
 	}
