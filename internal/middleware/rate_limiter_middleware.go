@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"sync"
 	"time"
+	"user-management-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
@@ -35,6 +36,9 @@ func getRateLimiter(ip string) *rate.Limiter {
 	client, exists := clients[ip]
 	// IP does not exist → create new
 	if !exists {
+		requestSecStr := utils.GetEnv("RATE_LIMITER_REQUEST_SEC", "5")
+		brustStr := utils.GetEnv("RATE_LIMITER_REQUEST_BURST", "10")
+
 		limiter := rate.NewLimiter(5, 10) // 5 request/s , brust : 10 (max), ban đầu 10, hết 10 cấp phát thêm 5 rq mỗi giây
 		newClient := &Client{limiter, time.Now()}
 		clients[ip] = *newClient
