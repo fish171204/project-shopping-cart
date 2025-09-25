@@ -82,6 +82,21 @@ func RateLimiterMiddleware(rateLimiterLogger *zerolog.Logger) gin.HandlerFunc {
 
 		limiter := getRateLimiter(ip)
 		if !limiter.Allow() {
+
+			rateLimiterLogger.Warn().
+				Str("method", ctx.Request.Method).
+				Str("path", ctx.Request.URL.Path).
+				Str("query", ctx.Request.URL.RawQuery).
+				Str("client_ip", ctx.ClientIP()).
+				Str("user_agent", ctx.Request.UserAgent()).
+				Str("referer", ctx.Request.Referer()).
+				Str("protocol", ctx.Request.Proto).
+				Str("host", ctx.Request.Host).
+				Str("remote_addr", ctx.Request.RemoteAddr).
+				Str("request_uri", ctx.Request.RequestURI).
+				Interface("headers", ctx.Request.Header).
+				Msg("rate limiter exceeded")
+
 			ctx.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
 				"error":   "Too many request",
 				"message": "Bạn đã gửi quá nhiều request. Hãy thử lại sau",
