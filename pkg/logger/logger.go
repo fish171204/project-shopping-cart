@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"bytes"
+	"encoding/json"
 	"io"
 	"os"
 	"time"
@@ -45,4 +47,19 @@ func NewLogger(config LoggerConfig) *zerolog.Logger {
 	logger := zerolog.New(writer).With().Timestamp().Logger()
 
 	return &logger
+}
+
+type PrettyJSONWriter struct {
+	Writer io.Writer
+}
+
+func (w PrettyJSONWriter) Write(p []byte) (n int, err error) {
+	var prettyJSON bytes.Buffer
+
+	err = json.Indent(&prettyJSON, p, "", "  ")
+	if err != nil {
+		return w.Writer.Write(p)
+	}
+
+	return w.Writer.Write(prettyJSON.Bytes())
 }
