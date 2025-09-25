@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-func RecoveryMiddleware(recoveryLogger zerolog.Logger) gin.HandlerFunc {
+func RecoveryMiddleware(recoveryLogger *zerolog.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		defer func() {
