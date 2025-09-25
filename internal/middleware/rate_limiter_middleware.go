@@ -107,3 +107,20 @@ func RateLimiterMiddleware(rateLimiterLogger *zerolog.Logger) gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+var rateLimitLogCache = sync.Map{}
+
+const rateLimitLogTTL = 10 * time.Second
+
+func shouldLogRateLimit(ip string) bool {
+	now := time.Now()
+
+	if val, ok := rateLimitLogCache.Load(ip); ok {
+		if t, ok := val.(time.Time); ok && now.Sub(t) < rateLimitLogTTL {
+			return false
+		}
+	}
+
+	rateLimitLogCache.Store(ip, now)
+	return true
+}
