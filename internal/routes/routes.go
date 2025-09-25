@@ -14,17 +14,11 @@ type Route interface {
 }
 
 func RegisterRoutes(r *gin.Engine, routes ...Route) {
+
+	httpLogger := newLoggerWithPath("../../internal/logs/http.log", "info")
+
 	logPath := "../../internal/logs/http.log"
 	logRecoveryPath := "../../internal/logs/recovery.log"
-
-	httpLogger := zerolog.New(&lumberjack.Logger{
-		Filename:   logPath,
-		MaxSize:    1,    // MB
-		MaxBackups: 5,    // number of backup files
-		MaxAge:     5,    // days before deletion
-		Compress:   true, // disabled by default (compress)
-		LocalTime:  true, // use local time in log
-	}).With().Timestamp().Logger()
 
 	recoveryLogger := zerolog.New(&lumberjack.Logger{
 		Filename:   logRecoveryPath,
