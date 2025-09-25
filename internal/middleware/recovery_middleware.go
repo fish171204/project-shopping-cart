@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"regexp"
 	"runtime/debug"
 	"strings"
 
@@ -39,6 +40,8 @@ func RecoveryMiddleware(recoveryLogger *zerolog.Logger) gin.HandlerFunc {
 	}
 }
 
+var stackLineRegex = regexp.MustCompile(`(.+\go:\d+)`)
+
 func ExtractFirstAppStackLine(stack []byte) string {
 	lines := bytes.Split(stack, []byte("\n"))
 
@@ -46,7 +49,7 @@ func ExtractFirstAppStackLine(stack []byte) string {
 		if bytes.Contains(line, []byte(".go")) &&
 			!bytes.Contains(line, []byte("/runtime/")) &&
 			!bytes.Contains(line, []byte("/debug/")) &&
-			!bytes.Contains(line, []byte("/recovery_middleware.go/")) {
+			!bytes.Contains(line, []byte("recovery_middleware.go")) {
 			cleanLine := strings.TrimSpace(string(line))
 			return cleanLine
 		}
