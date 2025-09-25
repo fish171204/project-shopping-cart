@@ -20,12 +20,11 @@ func NewLogger(config LoggerConfig) *zerolog.Logger {
 	var writer io.Writer
 
 	writer = &lumberjack.Logger{
-		Filename:   "../../internal/logs/http.log",
-		MaxSize:    1,    // MB
-		MaxBackups: 5,    // number of backup files
-		MaxAge:     5,    // days before deletion
-		Compress:   true, // disabled by default (compress)
-		LocalTime:  true, // use local time in log
+		Filename:   config.Filename,
+		MaxSize:    config.MaxSize,    // MB
+		MaxBackups: config.MaxBackups, // number of backup files
+		MaxAge:     config.MaxAge,     // days before deletion
+		Compress:   config.Compress,   // disabled by default (compress)
 	}
 
 	logger := zerolog.New(writer).With().Timestamp().Logger()
