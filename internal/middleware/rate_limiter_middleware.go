@@ -45,12 +45,12 @@ func getRateLimiter(ip string) *rate.Limiter {
 			panic("invalid RATE_LIMITER_REQUEST_SEC: " + err.Error())
 		}
 
-		brust, err := strconv.Atoi(requestSecStr)
+		brust, err := strconv.Atoi(brustStr)
 		if err != nil {
 			panic("invalid RATE_LIMITER_REQUEST_BURST: " + err.Error())
 		}
 
-		limiter := rate.NewLimiter(5, 10) // 5 request/s , brust : 10 (max), ban đầu 10, hết 10 cấp phát thêm 5 rq mỗi giây
+		limiter := rate.NewLimiter(rate.Limit(requestSec), brust) // 5 request/s , brust : 10 (max), ban đầu 10, hết 10 cấp phát thêm 5 rq mỗi giây
 		newClient := &Client{limiter, time.Now()}
 		clients[ip] = *newClient
 
