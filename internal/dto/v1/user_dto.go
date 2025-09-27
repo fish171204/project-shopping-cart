@@ -1,5 +1,7 @@
 package v1dto
 
+import "user-management-api/internal/db/sqlc"
+
 // Data Transfer Object (DTO): chuyển dữ liệu ra response
 type UserDTO struct {
 	UUID   string `json:"uuid"`
@@ -29,8 +31,13 @@ type UpdateUserInput struct {
 }
 
 // Request
-func (input *CreateUserInput) MapCreateInputToModel() {
+func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
 
+}
+
+func ConvertToInt32Pointer(value int) *int32 {
+	v := int32(value)
+	return &v
 }
 
 func (input *UpdateUserInput) MapUpdateInputToModel() {
