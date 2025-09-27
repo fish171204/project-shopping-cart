@@ -77,9 +77,11 @@ func MapUserToDTO(user sqlc.User) *UserDTO {
 func mapStatusText(status int) string {
 	switch status {
 	case 1:
-		return "Show"
+		return "Active"
 	case 2:
-		return "Hide"
+		return "Inactive"
+	case 3:
+		return "Banned"
 	default:
 		return "None"
 	}
@@ -88,8 +90,10 @@ func mapStatusText(status int) string {
 func mapLevelText(status int) string {
 	switch status {
 	case 1:
-		return "Admin"
+		return "Administrator"
 	case 2:
+		return "Moderator"
+	case 3:
 		return "Member"
 	default:
 		return "None"
