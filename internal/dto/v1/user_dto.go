@@ -60,7 +60,6 @@ func MapUserToDTO(user sqlc.User) *UserDTO {
 		Status:    mapStatusText(int(user.UserStatus)),
 		Level:     mapLevelText(int(user.UserLevel)),
 		CreatedAt: user.UserCreatedAt.Format("2006-01-02 15:04:05"),
-		DeletedAt: user.UserDeletedAt.Time.Format("2006-01-02 15:04:05"),
 	}
 
 	if user.UserAge != nil {
