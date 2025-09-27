@@ -9,6 +9,8 @@ import (
 	"syscall"
 	"time"
 	"user-management-api/internal/config"
+	"user-management-api/internal/db"
+	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/routes"
 	"user-management-api/internal/validation"
 
@@ -25,6 +27,10 @@ type Application struct {
 	modules []Module
 }
 
+type ModuleContext struct {
+	DB sqlc.Querier
+}
+
 func NewApplication(cfg *config.Config) *Application {
 
 	if err := validation.InitValidator(); err != nil {
@@ -32,6 +38,10 @@ func NewApplication(cfg *config.Config) *Application {
 	}
 
 	r := gin.Default()
+
+	ctx := &ModuleContext{
+		DB: db.DB
+	}
 
 	modules := []Module{
 		NewUserModule(),

@@ -15,7 +15,9 @@ func (ur *SqlUserRepository) FindByUUID(uuid string) {}
 func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
-func (ur *SqlUserRepository) Create() {}
+func (ur *SqlUserRepository) Create() {
+
+}
 
 // PUT
 func (ur *SqlUserRepository) Update(uuid string) {}
