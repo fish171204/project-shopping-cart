@@ -73,7 +73,9 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 		utils.ResponseError(ctx, err)
 	}
 
-	utils.ResponseSuccess(ctx, http.StatusCreated, "")
+	userDTO := v1dto.MapUserToDTO(createdUser)
+
+	utils.ResponseSuccess(ctx, http.StatusCreated, userDTO)
 }
 
 // PUT
