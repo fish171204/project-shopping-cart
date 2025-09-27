@@ -18,7 +18,7 @@ type User struct {
 	UserPassword string    `json:"user_password"`
 	UserFullname string    `json:"user_fullname"`
 	// User age, must be between 1 and 150
-	UserAge pgtype.Int4 `json:"user_age"`
+	UserAge *int32 `json:"user_age"`
 	// User status: 1 - Active, 2 - Inactive, 3 - Banned
 	UserStatus int32 `json:"user_status"`
 	// User level: 1 - Administrator, 2 - Moderator, 3 - Member

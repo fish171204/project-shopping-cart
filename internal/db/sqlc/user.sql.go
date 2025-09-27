@@ -7,8 +7,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -25,12 +23,12 @@ INSERT INTO users(
 `
 
 type CreateUserParams struct {
-	UserEmail    string      `json:"user_email"`
-	UserPassword string      `json:"user_password"`
-	UserFullname string      `json:"user_fullname"`
-	UserAge      pgtype.Int4 `json:"user_age"`
-	UserStatus   int32       `json:"user_status"`
-	UserLevel    int32       `json:"user_level"`
+	UserEmail    string `json:"user_email"`
+	UserPassword string `json:"user_password"`
+	UserFullname string `json:"user_fullname"`
+	UserAge      *int32 `json:"user_age"`
+	UserStatus   int32  `json:"user_status"`
+	UserLevel    int32  `json:"user_level"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
