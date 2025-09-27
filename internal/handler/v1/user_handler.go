@@ -66,6 +66,8 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 		return
 	}
 
+	uh.service.CreateUsers()
+
 	utils.ResponseSuccess(ctx, http.StatusCreated, "")
 }
 
