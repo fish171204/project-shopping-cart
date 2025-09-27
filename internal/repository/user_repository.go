@@ -1,6 +1,9 @@
 package repository
 
-import "user-management-api/internal/db/sqlc"
+import (
+	"context"
+	"user-management-api/internal/db/sqlc"
+)
 
 type SqlUserRepository struct {
 	db sqlc.Querier
@@ -20,8 +23,13 @@ func (ur *SqlUserRepository) FindByUUID(uuid string) {}
 func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
-func (ur *SqlUserRepository) Create() {
-	ur.db.CreateUser()
+func (ur *SqlUserRepository) Create(ctx context.Context, userParams sqlc.CreateUserParams) (sqlc.User, error) {
+	user, err := ur.db.CreateUser(ctx, userParams)
+	if err != nil {
+		return sqlc.User{}, err
+	}
+
+	return user, nil
 }
 
 // PUT
