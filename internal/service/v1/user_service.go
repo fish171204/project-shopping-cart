@@ -1,7 +1,10 @@
 package v1service
 
 import (
+	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
+
+	"github.com/gin-gonic/gin"
 )
 
 type userService struct {
@@ -19,7 +22,12 @@ func (us *userService) GetAllUsers(search string, page, limit int) {}
 func (us *userService) GetUserByUUID(uuid string) {}
 
 // POST
-func (us *userService) CreateUsers() {}
+func (us *userService) CreateUsers(ctx *gin.Context, user sqlc.CreateUserParams) {
+	context := ctx.Request.Context()
+
+	us.repo.Create(context, user)
+
+}
 
 // PUT
 func (us *userService) UpdateUser(uuid string) {}
