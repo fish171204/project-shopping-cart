@@ -71,6 +71,7 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 	createdUser, err := uh.service.CreateUsers(ctx, user)
 	if err != nil {
 		utils.ResponseError(ctx, err)
+		return
 	}
 
 	userDTO := v1dto.MapUserToDTO(createdUser)
