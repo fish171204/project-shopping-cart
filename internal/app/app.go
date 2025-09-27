@@ -40,11 +40,11 @@ func NewApplication(cfg *config.Config) *Application {
 	r := gin.Default()
 
 	ctx := &ModuleContext{
-		DB: db.DB
+		DB: db.DB,
 	}
 
 	modules := []Module{
-		NewUserModule(),
+		NewUserModule(ctx),
 	}
 
 	routes.RegisterRoutes(r, getModuleRoutes(modules)...)

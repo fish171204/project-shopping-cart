@@ -1,10 +1,15 @@
 package repository
 
+import "user-management-api/internal/db/sqlc"
+
 type SqlUserRepository struct {
+	db sqlc.Querier
 }
 
-func NewSqlUserRepository() UserRepository {
-	return &SqlUserRepository{}
+func NewSqlUserRepository(db sqlc.Querier) UserRepository {
+	return &SqlUserRepository{
+		db: db,
+	}
 }
 
 // GET
@@ -16,7 +21,7 @@ func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
 func (ur *SqlUserRepository) Create() {
-
+	ur.db.CreateUser()
 }
 
 // PUT
