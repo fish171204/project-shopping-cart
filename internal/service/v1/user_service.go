@@ -3,6 +3,7 @@ package v1service
 import (
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
+	"user-management-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +25,8 @@ func (us *userService) GetUserByUUID(uuid string) {}
 // POST
 func (us *userService) CreateUsers(ctx *gin.Context, user sqlc.CreateUserParams) {
 	context := ctx.Request.Context()
+
+	user.UserEmail = utils.NormalizeString(user.UserEmail)
 
 	us.repo.Create(context, user)
 
