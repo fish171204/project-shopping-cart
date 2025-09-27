@@ -1,6 +1,9 @@
 package v1dto
 
-import "user-management-api/internal/db/sqlc"
+import (
+	"user-management-api/internal/db/sqlc"
+	"user-management-api/internal/utils"
+)
 
 // Data Transfer Object (DTO): chuyển dữ liệu ra response
 type UserDTO struct {
@@ -35,7 +38,10 @@ func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
 	return sqlc.CreateUserParams{
 		UserEmail:    input.Name,
 		UserPassword: input.Password,
-		UserAge:      ConvertToInt32Pointer(input.Age),
+		UserFullname: input.Name,
+		UserAge:      utils.ConvertToInt32Pointer(input.Age),
+		UserStatus:   int32(input.Status),
+		UserLevel:    int32(input.Level),
 	}
 }
 
