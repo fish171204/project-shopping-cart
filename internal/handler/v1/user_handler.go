@@ -68,7 +68,10 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 
 	user := input.MapCreateInputToModel()
 
-	uh.service.CreateUsers(ctx, user)
+	createdUser, err := uh.service.CreateUsers(ctx, user)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+	}
 
 	utils.ResponseSuccess(ctx, http.StatusCreated, "")
 }
