@@ -37,7 +37,7 @@ type UpdateUserInput struct {
 // Request
 func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
 	return sqlc.CreateUserParams{
-		UserEmail:    input.Name,
+		UserEmail:    input.Email,
 		UserPassword: input.Password,
 		UserFullname: input.Name,
 		UserAge:      utils.ConvertToInt32Pointer(input.Age),
