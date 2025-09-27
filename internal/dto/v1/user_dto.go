@@ -10,7 +10,7 @@ type UserDTO struct {
 	UUID      string `json:"uuid"`
 	Name      string `json:"full_name"`
 	Email     string `json:"email_address"`
-	Age       int    `json:"age"`
+	Age       *int   `json:"age"`
 	Status    string `json:"status"`
 	Level     string `json:"level"`
 	CreatedAt string `json:"created_at"`
@@ -19,7 +19,7 @@ type UserDTO struct {
 type CreateUserInput struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
-	Age      int    `json:"age" binding:"gt=18"`
+	Age      int    `json:"age" binding:"omitempty,gt=18"`
 	Password string `json:"password" binding:"required,min=8,password_strong"`
 	Status   int    `json:"status" binding:"required,oneof=1 2 3"`
 	Level    int    `json:"level" binding:"required,oneof=1 2 3"`
@@ -62,7 +62,8 @@ func MapUserToDTO(user sqlc.User) *UserDTO {
 	}
 
 	if user.UserAge != nil {
-		dto.Age = int(*user.UserAge)
+		age := int(*user.UserAge)
+		dto.Age = &age
 	}
 
 	// if user.UserDeletedAt.Valid {
