@@ -49,6 +49,23 @@ func (input *UpdateUserInput) MapUpdateInputToModel() {
 
 }
 
+// Response
+func MapUserToDTO(user sqlc.User) *UserDTO {
+	dto := &UserDTO{
+		UUID:   user.UserUuid.String(),
+		Name:   user.UserFullname,
+		Email:  user.UserEmail,
+		Status: mapStatusText(int(user.UserStatus)),
+		Level:  mapLevelText(int(user.UserLevel)),
+	}
+
+	if user.UserAge != nil {
+		dto.Age = int(*user.UserAge)
+	}
+
+	return dto
+}
+
 func mapStatusText(status int) string {
 	switch status {
 	case 1:
