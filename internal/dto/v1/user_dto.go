@@ -19,10 +19,10 @@ type UserDTO struct {
 type CreateUserInput struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
-	Age      int    `json:"age" binding:"required,gt=18"`
+	Age      int    `json:"age" binding:"gt=18"`
 	Password string `json:"password" binding:"required,min=8,password_strong"`
-	Status   int    `json:"status" binding:"required,oneof=1 2"`
-	Level    int    `json:"level" binding:"required,oneof=1 2"`
+	Status   int    `json:"status" binding:"required,oneof=1 2 3"`
+	Level    int    `json:"level" binding:"required,oneof=1 2 3"`
 }
 
 type UpdateUserInput struct {
@@ -30,8 +30,8 @@ type UpdateUserInput struct {
 	Email    string `json:"email" binding:"omitempty,email"`
 	Age      int    `json:"age" binding:"omitempty,gt=18"`
 	Password string `json:"password" binding:"omitempty,min=8,password_strong"`
-	Status   int    `json:"status" binding:"omitempty,oneof=1 2"`
-	Level    int    `json:"level" binding:"omitempty,oneof=1 2"`
+	Status   int    `json:"status" binding:"omitempty,oneof=1 2 3"`
+	Level    int    `json:"level" binding:"omitempty,oneof=1 2 3"`
 }
 
 // Request
