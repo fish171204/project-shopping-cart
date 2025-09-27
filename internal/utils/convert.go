@@ -31,3 +31,8 @@ func UpdateIntField(current *int, new int) {
 		*current = new
 	}
 }
+
+func ConvertToInt32Pointer(value int) *int32 {
+	v := int32(value)
+	return &v
+}

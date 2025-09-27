@@ -32,12 +32,11 @@ type UpdateUserInput struct {
 
 // Request
 func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
-
-}
-
-func ConvertToInt32Pointer(value int) *int32 {
-	v := int32(value)
-	return &v
+	return sqlc.CreateUserParams{
+		UserEmail:    input.Name,
+		UserPassword: input.Password,
+		UserAge:      ConvertToInt32Pointer(input.Age),
+	}
 }
 
 func (input *UpdateUserInput) MapUpdateInputToModel() {
