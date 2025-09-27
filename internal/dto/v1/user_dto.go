@@ -14,7 +14,6 @@ type UserDTO struct {
 	Status    string `json:"status"`
 	Level     string `json:"level"`
 	CreatedAt string `json:"created_at"`
-	DeletedAt string `json:"deleted_at"`
 }
 
 type CreateUserInput struct {
@@ -66,11 +65,11 @@ func MapUserToDTO(user sqlc.User) *UserDTO {
 		dto.Age = int(*user.UserAge)
 	}
 
-	if user.UserDeletedAt.Valid {
-		dto.DeletedAt = user.UserDeletedAt.Time.Format("2006-01-02 15:04:05")
-	} else {
-		dto.DeletedAt = ""
-	}
+	// if user.UserDeletedAt.Valid {
+	// 	dto.DeletedAt = user.UserDeletedAt.Time.Format("2006-01-02 15:04:05")
+	// } else {
+	// 	dto.DeletedAt = ""
+	// }
 
 	return dto
 }
