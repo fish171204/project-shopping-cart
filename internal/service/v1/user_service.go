@@ -6,6 +6,7 @@ import (
 	"user-management-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -23,13 +24,24 @@ func (us *userService) GetAllUsers(search string, page, limit int) {}
 func (us *userService) GetUserByUUID(uuid string) {}
 
 // POST
-func (us *userService) CreateUsers(ctx *gin.Context, user sqlc.CreateUserParams) {
+func (us *userService) CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams) (sqlc.User, error) {
 	context := ctx.Request.Context()
 
-	user.UserEmail = utils.NormalizeString(user.UserEmail)
+	input.UserEmail = utils.NormalizeString(input.UserEmail)
 
-	us.repo.Create(context, user)
+	hashesPassword, err := bcrypt.GenerateFromPassword([]byte(input.UserPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return sqlc.User{}, utils.WrapError("failed to hash password", utils.ErrCodeInternal, err)
+	}
 
+	input.UserPassword = string(hashesPassword)
+
+	user, err := us.repo.Create(context, input)
+	if err != nil {
+		return sqlc.User{}, utils.WrapError("failed to create a new user", utils.ErrCodeInternal, err)
+	}
+
+	return user, nil
 }
 
 // PUT

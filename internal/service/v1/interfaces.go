@@ -8,7 +8,7 @@ import (
 
 type UserService interface {
 	GetAllUsers(search string, page, limit int)
-	CreateUsers(ctx *gin.Context, user sqlc.CreateUserParams)
+	CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams) (sqlc.User, error)
 	GetUserByUUID(uuid string)
 	UpdateUser(uuid string)
 	DeleteUser(uuid string)
