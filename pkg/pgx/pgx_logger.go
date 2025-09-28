@@ -2,6 +2,7 @@ package pgx
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"strings"
 	"time"
@@ -48,6 +49,35 @@ func parseSQL(sql string) QueryInfo {
 	info.CleanSQL = cleanSQL
 
 	return info
+}
+
+func formatArg(arg any) string {
+
+	switch v := arg.(type) {
+	case string:
+		return fmt.Sprintf("'%s'", strings.ReplaceAll(v, "'", "''"))
+	case bool:
+		return fmt.Sprintf("%t", v)
+	case int, int8, int16, int32, uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%d", v)
+	case float32, float64:
+		return fmt.Sprintf("%f", v)
+	case time.Time:
+		return fmt.Sprintf("'%s'", v.Format("2006-01-02T15:04:05Z07:00"))
+	case nil:
+		return "NULL"
+	default:
+		return fmt.Sprintf("'%s'", strings.ReplaceAll(fmt.Sprintf("%v", v), "'", "''"))
+	}
+}
+
+func replacePlaceHolers(sql string, args []any) string {
+	for i, arg := range args {
+		placeholder := fmt.Sprintf("$%d", i+1)
+		sql = strings.ReplaceAll(sql, placeholder)
+	}
+
+	return sql
 }
 
 func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]any) {
