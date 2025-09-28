@@ -11,6 +11,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type contextKey string
+
+const TraceIdKey contextKey = "trace_id"
+
 type LoggerConfig struct {
 	Level      string
 	Filename   string
