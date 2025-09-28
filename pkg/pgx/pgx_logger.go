@@ -24,6 +24,8 @@ type QueryInfo struct {
 
 var (
 	sqlcNameRegex = regexp.MustCompile(`-- name:\s*(\w+)\s*:(\w+)`)
+	spaceRegex    = regexp.MustCompile(`\s+`)
+	commentRegex  = regexp.MustCompile(`-- [^\r\n]*`)
 )
 
 // OriginalSQL: -- name: CreateUser :one .... [0] - Full match
@@ -40,6 +42,11 @@ func parseSQL(sql string) QueryInfo {
 		info.OperationType = strings.ToUpper(matches[2])
 	}
 
+	cleanSQL := commentRegex.ReplaceAllString(sql, "")
+	cleanSQL = strings.TrimSpace(cleanSQL)
+	cleanSQL = spaceRegex.ReplaceAllString(cleanSQL, " ")
+	info.CleanSQL = cleanSQL
+
 	return info
 }
 
@@ -54,6 +61,7 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	baseLogger := t.Logger.With().
 		Dur("duration", duration).
 		Str("sql_original", queryInfo.OriginalSQL).
+		Str("sql", queryInfo.CleanSQL).
 		Str("query_name", queryInfo.QueryName).
 		Str("operation", queryInfo.OperationType).
 		Interface("args", args)
