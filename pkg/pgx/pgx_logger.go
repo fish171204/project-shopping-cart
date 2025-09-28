@@ -2,6 +2,7 @@ package pgx
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/jackc/pgx/v5/tracelog"
@@ -13,4 +14,9 @@ type PgxZerologTracer struct {
 	SlowQueryLimit time.Duration
 }
 
-func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]any)
+func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]any) {
+	log.Printf("%+v", data)
+
+	sql, _ := data["sql"].(string)
+
+}
