@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/tracelog"
 	"github.com/rs/zerolog"
+	"gorm.io/gorm/logger"
 )
 
 type PgxZerologTracer struct {
@@ -22,4 +23,10 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	duration, _ := data["time"].(time.Duration)
 
 	baseLogger := t.Logger.With()
+
+	if msg == "Query" && duration > t.SlowQueryLimit {
+		logger.Warn().Str("event", "Query").Msg("Slow SQL Query")
+		return
+	}
+
 }
