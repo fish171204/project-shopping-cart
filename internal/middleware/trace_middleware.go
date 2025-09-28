@@ -18,6 +18,7 @@ func TraceMiddleware() gin.HandlerFunc {
 		contextValue := context.WithValue(ctx.Request.Context(), logger.TraceIdKey, traceID)
 		ctx.Request = ctx.Request.WithContext(contextValue)
 
+		// Header response
 		ctx.Writer.Header().Set("X-Trace-Id", traceID)
 
 		ctx.Set(string(logger.TraceIdKey), traceID)
