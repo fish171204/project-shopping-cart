@@ -18,5 +18,8 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	log.Printf("%+v", data)
 
 	sql, _ := data["sql"].(string)
+	args, _ := data["args"].([]any)
+	duration, _ := data["time"].(time.Duration)
 
+	baseLogger := t.Logger.With()
 }
