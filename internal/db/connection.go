@@ -8,7 +8,6 @@ import (
 	"user-management-api/internal/config"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/utils"
-	"user-management-api/pkg/logger"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -23,17 +22,7 @@ func InitDB() error {
 		return fmt.Errorf("error parsing DB config: %v", err)
 	}
 
-	config := logger.LoggerConfig{
-		Level:      "info",
-		Filename:   "../../internal/logs/sql.log",
-		MaxSize:    1,
-		MaxBackups: 5,
-		MaxAge:     5,
-		Compress:   true,
-		IsDev:      utils.GetEnv("APP_EVN", "development"),
-	}
-
-	logger.NewLogger(config)
+	utils.NewLoggerWithPath("../../internal/logs/sql.log", "info")
 
 	conf.MaxConns = 50
 	conf.MinConns = 5
