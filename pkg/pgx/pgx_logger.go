@@ -84,7 +84,7 @@ func formatArg(arg any) string {
 func replacePlaceHolers(sql string, args []any) string {
 	for i, arg := range args {
 		placeholder := fmt.Sprintf("$%d", i+1)
-		sql = strings.ReplaceAll(sql, placeholder)
+		sql = strings.ReplaceAll(sql, placeholder, formatArg(arg))
 	}
 
 	return sql
