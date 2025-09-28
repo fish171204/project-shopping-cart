@@ -22,13 +22,13 @@ type QueryInfo struct {
 	OriginalSQL   string
 }
 
-// OriginalSQL: -- name: CreateUser :one ....
-// QueryName: CreateUser
-// OperationType: one
-
 var (
 	sqlcNameRegex = regexp.MustCompile(`-- name:\s*(\w+)\s*:(\w+)`)
 )
+
+// OriginalSQL: -- name: CreateUser :one .... [0] - Full match
+// QueryName: CreateUser					  [1] - Group 1 (\w+)
+// OperationType: one						  [2] - Group 2 (\w+)
 
 func parseSQL(sql string) QueryInfo {
 	info := QueryInfo{
@@ -49,9 +49,13 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	args, _ := data["args"].([]any)
 	duration, _ := data["time"].(time.Duration)
 
+	queryInfo := parseSQL(sql)
+
 	baseLogger := t.Logger.With().
 		Dur("duration", duration).
-		Str("sql", sql).
+		Str("sql_original", queryInfo.OriginalSQL).
+		Str("query_name", queryInfo.QueryName).
+		Str("operation", queryInfo.OperationType).
 		Interface("args", args)
 
 	logger := baseLogger.Logger()
