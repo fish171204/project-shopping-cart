@@ -8,8 +8,10 @@ import (
 	"user-management-api/internal/config"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/utils"
+	"user-management-api/pkg/pgx"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/tracelog"
 )
 
 var DB sqlc.Querier
@@ -23,6 +25,10 @@ func InitDB() error {
 	}
 
 	sqlLogger := utils.NewLoggerWithPath("../../internal/logs/sql.log", "info")
+	conf.ConnConfig.Tracer = &tracelog.TraceLog(
+		Logger: &pgx.PgxZerologTracer,
+		LogLevel:
+	)
 
 	conf.MaxConns = 50
 	conf.MinConns = 5
