@@ -98,6 +98,13 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 
 	queryInfo := parseSQL(sql)
 
+	var finalSQL string
+	if len(args) > 0 {
+		finalSQL = replacePlaceHolers(sql, args)
+	} else {
+		finalSQL = queryInfo.CleanSQL
+	}
+
 	baseLogger := t.Logger.With().
 		Dur("duration", duration).
 		Str("sql_original", queryInfo.OriginalSQL).
