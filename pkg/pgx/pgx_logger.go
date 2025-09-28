@@ -108,7 +108,7 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	baseLogger := t.Logger.With().
 		Dur("duration", duration).
 		Str("sql_original", queryInfo.OriginalSQL).
-		Str("sql", queryInfo.CleanSQL).
+		Str("sql", finalSQL).
 		Str("query_name", queryInfo.QueryName).
 		Str("operation", queryInfo.OperationType).
 		Interface("args", args)
