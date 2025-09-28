@@ -81,7 +81,7 @@ func formatArg(arg any) string {
 	}
 }
 
-func replacePlaceHolers(sql string, args []any) string {
+func replacePlaceHolders(sql string, args []any) string {
 	for i, arg := range args {
 		placeholder := fmt.Sprintf("$%d", i+1)
 		sql = strings.ReplaceAll(sql, placeholder, formatArg(arg))
@@ -100,7 +100,7 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 
 	var finalSQL string
 	if len(args) > 0 {
-		finalSQL = replacePlaceHolers(sql, args)
+		finalSQL = replacePlaceHolders(queryInfo.CleanSQL, args)
 	} else {
 		finalSQL = queryInfo.CleanSQL
 	}
@@ -116,11 +116,13 @@ func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg
 	logger := baseLogger.Logger()
 
 	if msg == "Query" && duration > t.SlowQueryLimit {
-		logger.Warn().Str("event", "Query").Msg("Slow SQL Query")
+		logger.Warn().Str("event", "Slow Query").Msg("Slow SQL Query")
 		return
 	}
 
 	if msg == "Query" {
 		logger.Info().Str("event", "Query").Msg("Executed SQL")
+		return
 	}
+
 }
