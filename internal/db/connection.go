@@ -22,7 +22,7 @@ func InitDB() error {
 		return fmt.Errorf("error parsing DB config: %v", err)
 	}
 
-	utils.NewLoggerWithPath("../../internal/logs/sql.log", "info")
+	sqlLogger := utils.NewLoggerWithPath("../../internal/logs/sql.log", "info")
 
 	conf.MaxConns = 50
 	conf.MinConns = 5
