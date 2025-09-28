@@ -2,6 +2,8 @@ package pgx
 
 import (
 	"context"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5/tracelog"
@@ -11,6 +13,34 @@ import (
 type PgxZerologTracer struct {
 	Logger         zerolog.Logger
 	SlowQueryLimit time.Duration
+}
+
+type QueryInfo struct {
+	QueryName     string
+	OperationType string
+	CleanSQL      string
+	OriginalSQL   string
+}
+
+// OriginalSQL: -- name: CreateUser :one ....
+// QueryName: CreateUser
+// OperationType: one
+
+var (
+	sqlcNameRegex = regexp.MustCompile(`-- name:\s*(\w+)\s*:(\w+)`)
+)
+
+func parseSQL(sql string) QueryInfo {
+	info := QueryInfo{
+		OriginalSQL: sql,
+	}
+
+	if matches := sqlcNameRegex.FindStringSubmatch(sql); len(matches) == 3 {
+		info.QueryName = matches[1]
+		info.OperationType = strings.ToUpper(matches[2])
+	}
+
+	return info
 }
 
 func (t *PgxZerologTracer) Log(ctx context.Context, level tracelog.LogLevel, msg string, data map[string]any) {
