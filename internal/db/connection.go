@@ -25,10 +25,13 @@ func InitDB() error {
 	}
 
 	sqlLogger := utils.NewLoggerWithPath("../../internal/logs/sql.log", "info")
-	conf.ConnConfig.Tracer = &tracelog.TraceLog(
-		Logger: &pgx.PgxZerologTracer,
-		LogLevel:
-	)
+	conf.ConnConfig.Tracer = &tracelog.TraceLog{
+		Logger: &pgx.PgxZerologTracer{
+			Logger:         *sqlLogger,
+			SlowQueryLimit: 500 * time.Millisecond,
+		},
+		LogLevel: tracelog.LogLevelDebug,
+	}
 
 	conf.MaxConns = 50
 	conf.MinConns = 5
