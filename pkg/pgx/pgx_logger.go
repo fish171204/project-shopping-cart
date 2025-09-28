@@ -3,6 +3,7 @@ package pgx
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"regexp"
 	"strings"
 	"time"
@@ -52,6 +53,15 @@ func parseSQL(sql string) QueryInfo {
 }
 
 func formatArg(arg any) string {
+	val := reflect.ValueOf(arg)
+
+	if arg == nil || (val.Kind() == reflect.Ptr && val.IsNil()) {
+		return "NULL"
+	}
+
+	if val.Kind() == reflect.Ptr {
+		arg = val.Elem().Interface()
+	}
 
 	switch v := arg.(type) {
 	case string:
