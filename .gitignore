@@ -36,6 +36,9 @@ log/
 *.sqlite3
 *.sql
 
+# SQLC generated files
+internal/db/sqlc/
+
 # IDE files
 .vscode/
 .idea/
