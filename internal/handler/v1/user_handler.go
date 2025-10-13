@@ -8,6 +8,7 @@ import (
 	"user-management-api/internal/validation"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -49,9 +50,15 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 }
 
 func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
-	var param GetUserByUuidParam
+	var params GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&param); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
 		return
 	}
 
