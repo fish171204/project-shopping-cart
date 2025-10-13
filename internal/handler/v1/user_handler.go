@@ -136,7 +136,7 @@ func (uh *UserHandler) SoftDeleteUser(ctx *gin.Context) {
 
 	userDTO := v1dto.MapUserToDTO(softDeleteUser)
 
-	utils.ResponseSuccess(ctx, http.StatusNoContent, userDTO)
+	utils.ResponseSuccess(ctx, http.StatusOK, userDTO)
 }
 
 func (uh *UserHandler) RestoreUser(ctx *gin.Context) {
@@ -160,7 +160,7 @@ func (uh *UserHandler) RestoreUser(ctx *gin.Context) {
 
 	userDTO := v1dto.MapUserToDTO(restoreUser)
 
-	utils.ResponseSuccess(ctx, http.StatusNoContent, userDTO)
+	utils.ResponseSuccess(ctx, http.StatusOK, userDTO)
 }
 
 func (uh *UserHandler) DeleteUser(ctx *gin.Context) {
