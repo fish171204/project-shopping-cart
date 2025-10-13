@@ -128,9 +128,15 @@ func (uh *UserHandler) SoftDeleteUser(ctx *gin.Context) {
 		return
 	}
 
-	uh.service.SoftDeleteUser(ctx, userUuid)
+	softDeleteUser, err := uh.service.SoftDeleteUser(ctx, userUuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
 
-	utils.ResponseStatusCode(ctx, http.StatusNoContent)
+	userDTO := v1dto.MapUserToDTO(softDeleteUser)
+
+	utils.ResponseSuccess(ctx, http.StatusNoContent, userDTO)
 }
 
 func (uh *UserHandler) RestoreUser(ctx *gin.Context) {
@@ -140,13 +146,39 @@ func (uh *UserHandler) RestoreUser(ctx *gin.Context) {
 		return
 	}
 
-	utils.ResponseStatusCode(ctx, http.StatusNoContent)
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	restoreUser, err := uh.service.RestoreUser(ctx, userUuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	userDTO := v1dto.MapUserToDTO(restoreUser)
+
+	utils.ResponseSuccess(ctx, http.StatusNoContent, userDTO)
 }
 
 func (uh *UserHandler) DeleteUser(ctx *gin.Context) {
 	var params GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	err = uh.service.DeleteUser(ctx, userUuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
 		return
 	}
 
