@@ -102,9 +102,12 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 
 	user := input.MapUpdateInputToModel(userUuid)
 
-	uh.service.UpdateUser(ctx, user)
+	updatedUser, err := uh.service.UpdateUser(ctx, user)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+	}
 
-	utils.ResponseSuccess(ctx, http.StatusOK, "")
+	utils.ResponseSuccess(ctx, http.StatusOK, updatedUser)
 
 }
 
