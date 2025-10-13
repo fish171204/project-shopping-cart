@@ -34,7 +34,12 @@ func (ur *SqlUserRepository) Create(ctx context.Context, input sqlc.CreateUserPa
 
 // PUT
 func (ur *SqlUserRepository) Update(ctx context.Context, input sqlc.UpdateUserParams) (sqlc.User, error) {
+	user, err := ur.db.UpdateUser(ctx, input)
+	if err != nil {
+		return sqlc.User{}, err
+	}
 
+	return user, nil
 }
 
 // DELETE
