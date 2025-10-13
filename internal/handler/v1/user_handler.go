@@ -105,6 +105,7 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 	updatedUser, err := uh.service.UpdateUser(ctx, user)
 	if err != nil {
 		utils.ResponseError(ctx, err)
+		return
 	}
 
 	userDTO := v1dto.MapUserToDTO(updatedUser)
