@@ -65,6 +65,7 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 		input.UserPassword = &hashed
 	}
 
+	us.repo.Update(context, input)
 }
 
 func (us *userService) DeleteUser(uuid string) {}
