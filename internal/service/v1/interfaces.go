@@ -10,6 +10,6 @@ type UserService interface {
 	GetAllUsers(search string, page, limit int)
 	CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams) (sqlc.User, error)
 	GetUserByUUID(uuid string)
-	UpdateUser(uuid string)
+	UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams) (sqlc.User, error)
 	DeleteUser(uuid string)
 }

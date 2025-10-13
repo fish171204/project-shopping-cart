@@ -52,6 +52,8 @@ func (us *userService) CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams
 }
 
 // PUT
-func (us *userService) UpdateUser(uuid string) {}
+func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams) (sqlc.User, error) {
+
+}
 
 func (us *userService) DeleteUser(uuid string) {}
