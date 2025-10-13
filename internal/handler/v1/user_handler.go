@@ -51,7 +51,7 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 
 func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 	var params GetUserByUuidParam
-	if err := ctx.ShouldBindUri(&param); err != nil {
+	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
 	}

@@ -3,6 +3,8 @@ package v1dto
 import (
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/utils"
+
+	"github.com/google/uuid"
 )
 
 // Data Transfer Object (DTO): chuyển dữ liệu ra response
@@ -46,8 +48,14 @@ func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
 	}
 }
 
-func (input *UpdateUserInput) MapUpdateInputToModel() {
-
+func (input *UpdateUserInput) MapUpdateInputToModel(userUuid uuid.UUID) sqlc.UpdateUserParams {
+	return sqlc.UpdateUserParams{
+		UserPassword: input.Password,
+		UserFullname: input.Name,
+		UserAge:      utils.ConvertToInt32Pointer(input.Age),
+		UserStatus:   int32(input.Status),
+		UserLevel:    int32(input.Level),
+	}
 }
 
 // Response
