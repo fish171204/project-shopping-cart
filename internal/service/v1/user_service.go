@@ -53,6 +53,17 @@ func (us *userService) CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams
 
 // PUT
 func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams) (sqlc.User, error) {
+	context := ctx.Request.Context()
+
+	if input.UserPassword != nil && *input.UserPassword != "" {
+		hashesPassword, err := bcrypt.GenerateFromPassword([]byte(*input.UserPassword), bcrypt.DefaultCost)
+		if err != nil {
+			return sqlc.User{}, utils.WrapError("failed to hash password", utils.ErrCodeInternal, err)
+		}
+
+		hashed := string(hashesPassword)
+		input.UserPassword = &hashed
+	}
 
 }
 
