@@ -95,6 +95,15 @@ func (us *userService) SoftDeleteDeleteUser(ctx *gin.Context, uuid uuid.UUID) (s
 func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
 	context := ctx.Request.Context()
 
+	restoreUser, err := us.repo.Restore(context, uuid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sqlc.User{}, utils.NewError("user not found", utils.ErrCodeNotFound)
+		}
+		return sqlc.User{}, utils.WrapError("failed to restore user", utils.ErrCodeInternal, err)
+	}
+
+	return restoreUser, nil
 }
 
 func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
