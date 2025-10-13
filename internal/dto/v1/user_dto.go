@@ -54,6 +54,7 @@ func (input *UpdateUserInput) MapUpdateInputToModel(userUuid uuid.UUID) sqlc.Upd
 		UserAge:      input.Age,
 		UserStatus:   input.Status,
 		UserLevel:    input.Level,
+		UserUuid:     userUuid,
 	}
 }
 

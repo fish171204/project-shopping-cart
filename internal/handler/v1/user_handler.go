@@ -56,12 +56,6 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 		return
 	}
 
-	userUuid, err := uuid.Parse(params.Uuid)
-	if err != nil {
-		utils.ResponseError(ctx, err)
-		return
-	}
-
 	utils.ResponseSuccess(ctx, http.StatusOK, "")
 }
 
@@ -91,6 +85,12 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 	var param GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&param); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
 		return
 	}
 
