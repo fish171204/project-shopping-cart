@@ -114,6 +114,26 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 
 }
 
+func (uh *UserHandler) SoftDeleteUser(ctx *gin.Context) {
+	var params GetUserByUuidParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	utils.ResponseStatusCode(ctx, http.StatusNoContent)
+}
+
+func (uh *UserHandler) RestoreUser(ctx *gin.Context) {
+	var params GetUserByUuidParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
+		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	utils.ResponseStatusCode(ctx, http.StatusNoContent)
+}
+
 func (uh *UserHandler) DeleteUser(ctx *gin.Context) {
 	var params GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&params); err != nil {
