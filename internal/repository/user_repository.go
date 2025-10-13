@@ -43,4 +43,8 @@ func (ur *SqlUserRepository) Update(ctx context.Context, input sqlc.UpdateUserPa
 }
 
 // DELETE
+func (ur *SqlUserRepository) SoftDelete(uuid string) {}
+
+func (ur *SqlUserRepository) Restore(uuid string) {}
+
 func (ur *SqlUserRepository) Delete(uuid string) {}
