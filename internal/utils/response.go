@@ -21,6 +21,12 @@ type AppError struct {
 	Err     error
 }
 
+type APIResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message,omitempty"`
+	Data    any    `json:"data,omitempty"`
+}
+
 func (ae *AppError) Error() string {
 	return ""
 }
