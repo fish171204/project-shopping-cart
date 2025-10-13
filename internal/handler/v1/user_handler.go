@@ -128,6 +128,8 @@ func (uh *UserHandler) SoftDeleteUser(ctx *gin.Context) {
 		return
 	}
 
+	uh.service.SoftDeleteUser(ctx, userUuid)
+
 	utils.ResponseStatusCode(ctx, http.StatusNoContent)
 }
 

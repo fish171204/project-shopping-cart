@@ -8,6 +8,7 @@ import (
 	"user-management-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -77,4 +78,8 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 	return updatedUser, nil
 }
 
-func (us *userService) DeleteUser(uuid string) {}
+func (us *userService) SoftDeleteDeleteUser(ctx *gin.Context, uuid uuid.UUID) {}
+
+func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) {}
+
+func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) {}
