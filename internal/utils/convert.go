@@ -32,10 +32,10 @@ func UpdateIntField(current *int, new int) {
 	}
 }
 
-func ConvertToInt32Pointer(value int) *int32 {
+func ConvertToInt32Pointer(value int32) *int32 {
 	if value == 0 {
 		return nil
 	}
-	v := int32(value)
-	return &v
+
+	return &value
 }
