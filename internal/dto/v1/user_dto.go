@@ -51,7 +51,7 @@ func (input *UpdateUserInput) MapUpdateInputToModel(userUuid uuid.UUID) sqlc.Upd
 	return sqlc.UpdateUserParams{
 		UserPassword: input.Password,
 		UserFullname: input.Name,
-		UserAge:      utils.ConvertToInt32Pointer(input.Age),
+		UserAge:      input.Age,
 		UserStatus:   input.Status,
 		UserLevel:    input.Level,
 	}
