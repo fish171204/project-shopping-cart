@@ -107,7 +107,9 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 		utils.ResponseError(ctx, err)
 	}
 
-	utils.ResponseSuccess(ctx, http.StatusOK, updatedUser)
+	userDTO := v1dto.MapUserToDTO(updatedUser)
+
+	utils.ResponseSuccess(ctx, http.StatusOK, userDTO)
 
 }
 
