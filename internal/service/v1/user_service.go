@@ -78,7 +78,7 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 	return updatedUser, nil
 }
 
-func (us *userService) SoftDeleteDeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
+func (us *userService) SoftDeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
 	context := ctx.Request.Context()
 
 	softDeleteUser, err := us.repo.SoftDelete(context, uuid)
