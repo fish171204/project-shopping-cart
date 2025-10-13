@@ -78,8 +78,20 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 	return updatedUser, nil
 }
 
-func (us *userService) SoftDeleteDeleteUser(ctx *gin.Context, uuid uuid.UUID) {}
+func (us *userService) SoftDeleteDeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
+	context := ctx.Request.Context()
 
-func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) {}
+	us.repo.SoftDelete(context, uuid)
+}
 
-func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) {}
+func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
+	context := ctx.Request.Context()
+
+	us.repo.Restore()
+}
+
+func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
+	context := ctx.Request.Context()
+
+	us.repo.Delete()
+}
