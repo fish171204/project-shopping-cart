@@ -1,6 +1,7 @@
 package v1service
 
 import (
+	"database/sql"
 	"errors"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
@@ -65,7 +66,15 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 		input.UserPassword = &hashed
 	}
 
-	us.repo.Update(context, input)
+	updatedUser, err := us.repo.Update(context, input)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return sqlc.User{}, utils.NewError("user not found", utils.ErrCodeNotFound)
+		}
+		return sqlc.User{}, utils.WrapError("failed to update user", utils.ErrCodeInternal, err)
+	}
+
+	return updatedUser, nil
 }
 
 func (us *userService) DeleteUser(uuid string) {}
