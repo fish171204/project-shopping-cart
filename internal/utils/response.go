@@ -50,7 +50,7 @@ func ResponseError(ctx *gin.Context, err error) {
 	if appError, ok := err.(*AppError); ok {
 		status := httpStatusFromCode(appError.Code)
 		response := gin.H{
-			"error": appError.Message,
+			"error": CapitalizeFirst(appError.Message),
 			"code":  appError.Code,
 		}
 
@@ -71,7 +71,7 @@ func ResponseError(ctx *gin.Context, err error) {
 func ResponseSuccess(ctx *gin.Context, status int, message string, data ...any) {
 	resp := APIResponse{
 		Status:  "success",
-		Message: message,
+		Message: CapitalizeFirst(message),
 	}
 
 	if len(data) > 0 && data[0] != nil {
