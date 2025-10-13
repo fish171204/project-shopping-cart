@@ -28,12 +28,11 @@ type CreateUserInput struct {
 }
 
 type UpdateUserInput struct {
-	Name     string `json:"name" binding:"omitempty"`
-	Email    string `json:"email" binding:"omitempty,email"`
-	Age      int    `json:"age" binding:"omitempty,gt=18"`
-	Password string `json:"password" binding:"omitempty,min=8,password_strong"`
-	Status   int    `json:"status" binding:"omitempty,oneof=1 2 3"`
-	Level    int    `json:"level" binding:"omitempty,oneof=1 2 3"`
+	Name     *string `json:"name" binding:"omitempty"`
+	Age      *int    `json:"age" binding:"omitempty,gt=18"`
+	Password *string `json:"password" binding:"omitempty,min=8,password_strong"`
+	Status   *int    `json:"status" binding:"omitempty,oneof=1 2 3"`
+	Level    *int    `json:"level" binding:"omitempty,oneof=1 2 3"`
 }
 
 // Request
