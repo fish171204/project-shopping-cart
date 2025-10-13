@@ -114,10 +114,17 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 
 }
 
+// DELETE
 func (uh *UserHandler) SoftDeleteUser(ctx *gin.Context) {
 	var params GetUserByUuidParam
 	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
+
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
 		return
 	}
 
