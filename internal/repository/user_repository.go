@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"user-management-api/internal/db/sqlc"
+
+	"github.com/google/uuid"
 )
 
 type SqlUserRepository struct {
@@ -43,8 +45,29 @@ func (ur *SqlUserRepository) Update(ctx context.Context, input sqlc.UpdateUserPa
 }
 
 // DELETE
-func (ur *SqlUserRepository) SoftDelete(uuid string) {}
+func (ur *SqlUserRepository) SoftDelete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error) {
+	user, err := ur.db.SoftDeleteUser(ctx, uuid)
+	if err != nil {
+		return sqlc.User{}, err
+	}
 
-func (ur *SqlUserRepository) Restore(uuid string) {}
+	return user, nil
+}
 
-func (ur *SqlUserRepository) Delete(uuid string) {}
+func (ur *SqlUserRepository) Restore(ctx context.Context, uuid uuid.UUID) (sqlc.User, error) {
+	user, err := ur.db.RestoreUser(ctx, uuid)
+	if err != nil {
+		return sqlc.User{}, err
+	}
+
+	return user, nil
+}
+
+func (ur *SqlUserRepository) Delete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error) {
+	user, err := ur.db.TrashUser(ctx, uuid)
+	if err != nil {
+		return sqlc.User{}, err
+	}
+
+	return user, nil
+}

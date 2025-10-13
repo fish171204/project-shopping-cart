@@ -13,7 +13,7 @@ type UserRepository interface {
 	FindByEmail(email string)
 	Create(ctx context.Context, input sqlc.CreateUserParams) (sqlc.User, error)
 	Update(ctx context.Context, input sqlc.UpdateUserParams) (sqlc.User, error)
-	SoftDelete(ctx context.Context, uuid uuid.UUID)
-	Restore(ctx context.Context, uuid uuid.UUID)
-	Delete(ctx context.Context, uuid uuid.UUID)
+	SoftDelete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
+	Restore(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
+	Delete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
 }
