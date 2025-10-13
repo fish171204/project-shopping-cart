@@ -106,8 +106,16 @@ func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User,
 	return restoreUser, nil
 }
 
-func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User, error) {
+func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) error {
 	context := ctx.Request.Context()
 
-	us.repo.Delete()
+	_, err := us.repo.Delete(context, uuid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return utils.NewError("user not found", utils.ErrCodeNotFound)
+		}
+		return utils.WrapError("failed to restore user", utils.ErrCodeInternal, err)
+	}
+
+	return nil
 }
