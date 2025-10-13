@@ -82,8 +82,8 @@ func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 
 // PUT
 func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
-	var param GetUserByUuidParam
-	if err := ctx.ShouldBindUri(&param); err != nil {
+	var params GetUserByUuidParam
+	if err := ctx.ShouldBindUri(&params); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
 	}
@@ -99,6 +99,10 @@ func (uh *UserHandler) UpdateUser(ctx *gin.Context) {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
 	}
+
+	user := input.MapUpdateInputToModel(userUuid)
+
+	uh.service.UpdateUser(ctx, user)
 
 	utils.ResponseSuccess(ctx, http.StatusOK, "")
 
