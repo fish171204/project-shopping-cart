@@ -28,8 +28,14 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	uh.service.GetAllUsers(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit)
-	utils.ResponseSuccess(ctx, http.StatusOK, "")
+	users, err := uh.service.GetAllUsers(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	usersDTO := v1dto.MapUsersToDTO(users)
+	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", usersDTO)
 }
 
 func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {

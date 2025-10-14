@@ -95,6 +95,16 @@ func MapUserToDTO(user sqlc.User) *UserDTO {
 	return dto
 }
 
+func MapUsersToDTO(users []sqlc.User) []UserDTO {
+	dtos := make([]UserDTO, 0, len(users))
+
+	for _, user := range users {
+		dtos = append(dtos, *MapUserToDTO(user))
+	}
+
+	return dtos
+}
+
 func mapStatusText(status int) string {
 	switch status {
 	case 1:
