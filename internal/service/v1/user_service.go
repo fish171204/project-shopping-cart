@@ -24,6 +24,15 @@ func NewUserService(repo repository.UserRepository) UserService {
 }
 
 func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort string, page, limit int32) ([]sqlc.User, error) {
+	context := ctx.Request.Context()
+
+	if sort == "" {
+		sort = "desc"
+	}
+
+	if orderBy == "" {
+		orderBy = "user_created_at"
+	}
 
 	if page <= 0 {
 		page = 1
