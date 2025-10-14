@@ -20,6 +20,43 @@ func NewSqlUserRepository(db sqlc.Querier) UserRepository {
 // GET
 func (ur *SqlUserRepository) GetAll(ctx context.Context, search, orderBy, sort string, limit, offset int32) ([]sqlc.User, error) {
 
+	var (
+		users []sqlc.User
+		err   error
+	)
+
+	switch {
+	case orderBy == "user_id" && sort == "asc":
+		users, err = ur.db.ListUsersUserIdAsc(ctx, sqlc.ListUsersUserIdAscParams{
+			Limit:  limit,
+			Offset: offset,
+			Search: search,
+		})
+	case orderBy == "user_id" && sort == "desc":
+		users, err = ur.db.ListUsersUserIdAsc(ctx, sqlc.ListUsersUserIdAscParams{
+			Limit:  limit,
+			Offset: offset,
+			Search: search,
+		})
+	case orderBy == "user_created_at" && sort == "asc":
+		users, err = ur.db.ListUsersUserCreatedAtAsc(ctx, sqlc.ListUsersUserCreatedAtAscParams{
+			Limit:  limit,
+			Offset: offset,
+			Search: search,
+		})
+	case orderBy == "user_created_at" && sort == "desc":
+		users, err = ur.db.ListUsersUserCreatedAtDesc(ctx, sqlc.ListUsersUserCreatedAtDescParams{
+			Limit:  limit,
+			Offset: offset,
+			Search: search,
+		})
+	}
+
+	if err != nil {
+		return []sqlc.User{}, err
+	}
+
+	return users, nil
 }
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
