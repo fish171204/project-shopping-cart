@@ -61,6 +61,15 @@ func (ur *SqlUserRepository) GetAll(ctx context.Context, search, orderBy, sort s
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
 
+func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string) (int64, error) {
+	total, err := ur.db.CountUsers(ctx, search)
+	if err != nil {
+		return 0, err
+	}
+
+	return total, nil
+}
+
 func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
