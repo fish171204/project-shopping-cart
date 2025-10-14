@@ -41,8 +41,10 @@ type GetUserByUuidParam struct {
 
 type GetUsersParam struct {
 	Search string `form:"search" binding:"omitempty,min=3,max=50,search"`
-	Page   int    `form:"page" binding:"omitempty,gte=1"`
-	Limit  int    `form:"limit" binding:"omitempty,gte=1,lte=500"`
+	Page   int32  `form:"page" binding:"omitempty,gte=1"`
+	Limit  int32  `form:"limit" binding:"omitempty,gte=1,lte=500"`
+	Order  string `form:"order_by" binding:"omitempty,oneof=user_id user_created_at"`
+	Sort   string `form:"sort" binding:"omitempty,oneof=asc desc"`
 }
 
 // Request
