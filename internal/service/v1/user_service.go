@@ -24,7 +24,7 @@ func NewUserService(repo repository.UserRepository) UserService {
 	}
 }
 
-func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort string, page, limit int32) ([]sqlc.User, error) {
+func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort string, page, limit int32) ([]sqlc.User, int32, error) {
 	context := ctx.Request.Context()
 
 	if sort == "" {
@@ -52,10 +52,15 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 
 	users, err := us.repo.GetAll(context, search, orderBy, sort, limit, offset)
 	if err != nil {
-		return []sqlc.User{}, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
+		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
 	}
 
-	return users, nil
+	total, err := us.repo.CountUsers(context, search)
+	if err != nil {
+		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
+	}
+
+	return users, int32(total), nil
 }
 
 func (us *userService) GetUserByUUID(uuid string) {}

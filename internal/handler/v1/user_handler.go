@@ -28,7 +28,7 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	users, err := uh.service.GetAllUsers(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit)
+	users, total, err := uh.service.GetAllUsers(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit)
 	if err != nil {
 		utils.ResponseError(ctx, err)
 		return
@@ -36,8 +36,9 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 
 	usersDTO := v1dto.MapUsersToDTO(users)
 
-	paginationResp := utils.NewPaginationResponse(usersDTO, params.Page, params.Limit)
-	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", usersDTO)
+	paginationResp := utils.NewPaginationResponse(usersDTO, params.Page, params.Limit, total)
+
+	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", paginationResp)
 }
 
 func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
