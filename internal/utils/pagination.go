@@ -14,6 +14,9 @@ type Pagination struct {
 }
 
 func NewPagination(page, limit, totalRecords int32) *Pagination {
+	if page <= 0 {
+		page = 1
+	}
 
 	if limit <= 0 {
 		envLimit := GetEnv("LIMIT_ITEM_ON_PER_PAGE", "10")
@@ -34,7 +37,7 @@ func NewPagination(page, limit, totalRecords int32) *Pagination {
 		Limit:       limit,
 		TotalRecord: totalRecords,
 		TotalPage:   totalPages,
-		HasNext:     page < int32(totalPages),
+		HasNext:     page < totalPages,
 		HasPrev:     page > 1,
 	}
 }
