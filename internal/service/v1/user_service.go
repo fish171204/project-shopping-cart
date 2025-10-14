@@ -41,6 +41,15 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 	if limit <= 0 {
 		limit = 10
 	}
+
+	offset := (page - 1) * limit
+
+	users, err := us.repo.GetAll(context, search, orderBy, sort, limit, offset)
+	if err != nil {
+		return []sqlc.User{}, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
+	}
+
+	return users, nil
 }
 
 func (us *userService) GetUserByUUID(uuid string) {}
