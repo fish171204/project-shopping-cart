@@ -35,6 +35,8 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 	}
 
 	usersDTO := v1dto.MapUsersToDTO(users)
+
+	paginationResp := utils.NewPaginationResponse(usersDTO, params.Page, params.Limit)
 	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", usersDTO)
 }
 

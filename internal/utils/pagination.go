@@ -41,3 +41,10 @@ func NewPagination(page, limit, totalRecords int32) *Pagination {
 		HasPrev:     page > 1,
 	}
 }
+
+func NewPaginationResponse(data any, page, limit, totalRecords int32) map[string]any {
+	return map[string]any{
+		"data":       data,
+		"pagination": NewPagination(page, limit, totalRecords),
+	}
+}
