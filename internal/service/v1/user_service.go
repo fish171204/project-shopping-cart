@@ -3,6 +3,7 @@ package v1service
 import (
 	"database/sql"
 	"errors"
+	"strconv"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
@@ -39,7 +40,12 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 	}
 
 	if limit <= 0 {
-		limit = 10
+		envLimit := utils.GetEnv("LIMIT_ITEM_ON_PER_PAGE", "10")
+		limitInt, err := strconv.Atoi(envLimit)
+		if err != nil || limitInt <= 0 {
+			limit = 10
+		}
+		limit = int32(limitInt)
 	}
 
 	offset := (page - 1) * limit

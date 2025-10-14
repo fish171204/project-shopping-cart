@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"strconv"
+)
+
 type Pagination struct {
 	Page        int32 `json:"page"`
 	Limit       int32 `json:"limit"`
@@ -10,6 +14,15 @@ type Pagination struct {
 }
 
 func NewPagination(page, limit, totalRecords int32) *Pagination {
+
+	if limit <= 0 {
+		envLimit := GetEnv("LIMIT_ITEM_ON_PER_PAGE", "10")
+		limitInt, err := strconv.Atoi(envLimit)
+		if err != nil || limitInt <= 0 {
+			limit = 10
+		}
+		limit = int32(limitInt)
+	}
 
 	// Tổng số trang = ceil(tổng số record / số phần tử trên 1 trang)
 	// C1: totalPages := math.Ceil(float64(totalRecords) / float64(limit))
