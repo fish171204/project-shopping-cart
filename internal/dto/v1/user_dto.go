@@ -35,6 +35,16 @@ type UpdateUserInput struct {
 	Level    *int32  `json:"level" binding:"omitempty,oneof=1 2 3"`
 }
 
+type GetUserByUuidParam struct {
+	Uuid string `uri:"uuid", binding:"uuid"`
+}
+
+type GetUsersParam struct {
+	Search string `form:"search" binding:"omitempty,min=3,max=50,search"`
+	Page   int    `form:"page" binding:"omitempty,gte=1,lte=100"`
+	Limit  int    `form:"limit" binding:"omitempty,gte=1,lte=100"`
+}
+
 // Request
 func (input *CreateUserInput) MapCreateInputToModel() sqlc.CreateUserParams {
 	return sqlc.CreateUserParams{
