@@ -28,14 +28,7 @@ func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 		return
 	}
 
-	if params.Page <= 0 {
-		params.Page = 1
-	}
-
-	if params.Limit <= 0 {
-		params.Limit = 10
-	}
-
+	uh.service.GetAllUsers(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit)
 	utils.ResponseSuccess(ctx, http.StatusOK, "")
 }
 
