@@ -18,7 +18,9 @@ func NewSqlUserRepository(db sqlc.Querier) UserRepository {
 }
 
 // GET
-func (ur *SqlUserRepository) FindAll() {}
+func (ur *SqlUserRepository) GetAll(ctx context.Context, search, orderBy, sort string, limit, offset int32) ([]sqlc.User, error) {
+
+}
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
 

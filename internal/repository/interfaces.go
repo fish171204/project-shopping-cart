@@ -8,11 +8,14 @@ import (
 )
 
 type UserRepository interface {
-	FindAll()
+	GetAll(ctx context.Context, search, orderBy, sort string, limit, offset int32) ([]sqlc.User, error)
 	FindByUUID(uuid string)
 	FindByEmail(email string)
+
 	Create(ctx context.Context, input sqlc.CreateUserParams) (sqlc.User, error)
+
 	Update(ctx context.Context, input sqlc.UpdateUserParams) (sqlc.User, error)
+
 	SoftDelete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
 	Restore(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
 	Delete(ctx context.Context, uuid uuid.UUID) (sqlc.User, error)
