@@ -48,11 +48,25 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 		return
 	}
 
-	utils.ResponseSuccess(ctx, http.StatusOK, "")
+	userUuid, err := uuid.Parse(params.Uuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	user, err := uh.service.GetUserByUuid(ctx, userUuid)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	userDTO := v1dto.MapUserToDTO(user)
+
+	utils.ResponseSuccess(ctx, http.StatusOK, "Get user successfully", userDTO)
 }
 
 func (uh *UserHandler) GetUserSoftDeleted(ctx *gin.Context) {
-	utils.ResponseSuccess(ctx, http.StatusOK, "")
+
 }
 
 // POST
