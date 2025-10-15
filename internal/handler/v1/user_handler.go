@@ -51,6 +51,10 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 	utils.ResponseSuccess(ctx, http.StatusOK, "")
 }
 
+func (uh *UserHandler) GetUserSoftDeleted(ctx *gin.Context) {
+	utils.ResponseSuccess(ctx, http.StatusOK, "")
+}
+
 // POST
 func (uh *UserHandler) CreateUsers(ctx *gin.Context) {
 	var input v1dto.CreateUserInput
