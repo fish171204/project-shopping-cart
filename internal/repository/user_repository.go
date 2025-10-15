@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"user-management-api/internal/db/sqlc"
 
 	"github.com/google/uuid"
@@ -57,6 +58,31 @@ func (ur *SqlUserRepository) GetAll(ctx context.Context, search, orderBy, sort s
 	}
 
 	return users, nil
+}
+
+// GET version 2
+func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort string, limit, offset int32) ([]sqlc.User, error) {
+	query := `SELECT *
+		FROM users
+		WHERE user_deleted_at IS NULL 
+		AND (
+			sqlc.narg(search)::TEXT IS NULL
+			OR sqlc.narg(search)::TEXT = ''
+			OR user_email ILIKE '%' || sqlc.narg(search) || '%'
+			OR user_fullname ILIKE '%' || sqlc.narg(search) || '%'
+		)`
+
+	order := "ASC"
+	if sort == "desc" {
+		order = "DESC"
+	}
+
+	switch orderBy {
+	case "user_id", "user_created_at":
+		query += fmt.Sprintf(" ORDER BY %s %s", orderBy, order)
+	default:
+		query += " ORDER BY user_id ASC"
+	}
 }
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
