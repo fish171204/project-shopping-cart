@@ -120,7 +120,14 @@ func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort
 	return users, nil
 }
 
-func (ur *SqlUserRepository) FindByUUID(uuid string) {}
+func (ur *SqlUserRepository) GetByUuid(ctx context.Context, uuid uuid.UUID) (sqlc.User, error) {
+	user, err := ur.db.GetUser(ctx, uuid)
+	if err != nil {
+		return sqlc.User{}, err
+	}
+
+	return user, nil
+}
 
 func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string) (int64, error) {
 	total, err := ur.db.CountUsers(ctx, search)
