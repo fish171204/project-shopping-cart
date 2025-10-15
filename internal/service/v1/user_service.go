@@ -24,7 +24,48 @@ func NewUserService(repo repository.UserRepository) UserService {
 	}
 }
 
+// GET V1
 func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort string, page, limit int32) ([]sqlc.User, int32, error) {
+	context := ctx.Request.Context()
+
+	if sort == "" {
+		sort = "desc"
+	}
+
+	if orderBy == "" {
+		orderBy = "user_created_at"
+	}
+
+	if page <= 0 {
+		page = 1
+	}
+
+	if limit <= 0 {
+		envLimit := utils.GetEnv("LIMIT_ITEM_ON_PER_PAGE", "10")
+		limitInt, err := strconv.Atoi(envLimit)
+		if err != nil || limitInt <= 0 {
+			limit = 10
+		}
+		limit = int32(limitInt)
+	}
+
+	offset := (page - 1) * limit
+
+	users, err := us.repo.GetAll(context, search, orderBy, sort, limit, offset)
+	if err != nil {
+		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
+	}
+
+	total, err := us.repo.CountUsers(context, search)
+	if err != nil {
+		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
+	}
+
+	return users, int32(total), nil
+}
+
+// GET V2
+func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort string, page, limit int32) ([]sqlc.User, int32, error) {
 	context := ctx.Request.Context()
 
 	if sort == "" {
