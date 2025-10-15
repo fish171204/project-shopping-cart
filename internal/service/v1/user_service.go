@@ -56,7 +56,7 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
 	}
 
-	total, err := us.repo.CountUsers(context, search)
+	total, err := us.repo.CountUsers(context, search, false)
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
 	}
@@ -96,7 +96,7 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
 	}
 
-	total, err := us.repo.CountUsers(context, search)
+	total, err := us.repo.CountUsers(context, search, deleted)
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
 	}
