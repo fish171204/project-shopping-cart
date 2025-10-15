@@ -85,7 +85,7 @@ func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort
 		query += " ORDER BY user_id ASC"
 	}
 
-	query += " LIMIT $1 OFFSET $3"
+	query += " LIMIT $2 OFFSET $3 -- name: Get All Version 2"
 
 	rows, err := db.DBPool.Query(ctx, query, search, limit, offset)
 
