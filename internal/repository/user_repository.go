@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"user-management-api/internal/db"
 	"user-management-api/internal/db/sqlc"
 
 	"github.com/google/uuid"
@@ -86,6 +87,37 @@ func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort
 
 	query += " LIMIT $1 OFFSET $3"
 
+	rows, err := db.DBPool.Query(ctx, query, search, limit, offset)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	users := []sqlc.User{}
+	for rows.Next() {
+		var i sqlc.User
+		if err := rows.Scan(
+			&i.UserID,
+			&i.UserUuid,
+			&i.UserEmail,
+			&i.UserPassword,
+			&i.UserFullname,
+			&i.UserAge,
+			&i.UserStatus,
+			&i.UserLevel,
+			&i.UserDeletedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
