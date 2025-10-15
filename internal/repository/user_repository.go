@@ -134,8 +134,11 @@ func (ur *SqlUserRepository) GetByUuid(ctx context.Context, uuid uuid.UUID) (sql
 	return user, nil
 }
 
-func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string) (int64, error) {
-	total, err := ur.db.CountUsers(ctx, search)
+func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string, deleted bool) (int64, error) {
+	total, err := ur.db.CountUsers(ctx, sqlc.CountUsersParams{
+		Search:  search,
+		Deleted: &deleted,
+	})
 	if err != nil {
 		return 0, err
 	}
