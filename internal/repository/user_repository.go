@@ -66,10 +66,10 @@ func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort
 		FROM users
 		WHERE user_deleted_at IS NULL 
 		AND (
-			sqlc.narg(search)::TEXT IS NULL
-			OR sqlc.narg(search)::TEXT = ''
-			OR user_email ILIKE '%' || sqlc.narg(search) || '%'
-			OR user_fullname ILIKE '%' || sqlc.narg(search) || '%'
+			$1::TEXT IS NULL
+			OR $1::TEXT = ''
+			OR user_email ILIKE '%' || $1 || '%'
+			OR user_fullname ILIKE '%' || $1 || '%'
 		)`
 
 	order := "ASC"
@@ -83,6 +83,9 @@ func (ur *SqlUserRepository) GetAllV2(ctx context.Context, search, orderBy, sort
 	default:
 		query += " ORDER BY user_id ASC"
 	}
+
+	query += " LIMIT $1 OFFSET $3"
+
 }
 
 func (ur *SqlUserRepository) FindByUUID(uuid string) {}
