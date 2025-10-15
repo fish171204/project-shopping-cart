@@ -21,6 +21,7 @@ func NewUserHandler(service v1service.UserService) *UserHandler {
 	}
 }
 
+// GET
 func (uh *UserHandler) GetAllUsers(ctx *gin.Context) {
 	var params v1dto.GetUsersParam
 	if err := ctx.ShouldBindQuery(&params); err != nil {
@@ -66,7 +67,23 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 }
 
 func (uh *UserHandler) GetUserSoftDeleted(ctx *gin.Context) {
+	var params v1dto.GetUsersParam
+	if err := ctx.ShouldBindQuery(&params); err != nil {
+		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
 
+	users, total, err := uh.service.GetAllUsersV2(ctx, params.Search, params.Order, params.Sort, params.Page, params.Limit, true)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
+
+	usersDTO := v1dto.MapUsersToDTO(users)
+
+	paginationResp := utils.NewPaginationResponse(usersDTO, params.Page, params.Limit, total)
+
+	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", paginationResp)
 }
 
 // POST
