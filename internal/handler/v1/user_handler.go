@@ -83,7 +83,7 @@ func (uh *UserHandler) GetUserSoftDeleted(ctx *gin.Context) {
 
 	paginationResp := utils.NewPaginationResponse(usersDTO, params.Page, params.Limit, total)
 
-	utils.ResponseSuccess(ctx, http.StatusOK, "User list successfully", paginationResp)
+	utils.ResponseSuccess(ctx, http.StatusOK, "List user soft deleted successfully", paginationResp)
 }
 
 // POST
