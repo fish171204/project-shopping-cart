@@ -86,3 +86,6 @@ config.yml
 
 # Test cache
 .testcache/
+
+# HTML test files
+index.html
