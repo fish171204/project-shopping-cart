@@ -41,3 +41,34 @@ func (cs *RedisCacheService) Set(key string, value any, ttl time.Duration) error
 	}
 	return cs.rdb.Set(cs.ctx, key, data, ttl).Err()
 }
+
+func (cs *RedisCacheService) Clear(pattern string) error {
+	cursor := uint64(0)
+	for {
+		keys, nextCursor, err := cs.rdb.Scan(cs.ctx, cursor, pattern, 2).Result()
+		if err != nil {
+			return err
+		}
+
+		if len(keys) > 0 {
+			cs.rdb.Del(cs.ctx, keys...)
+		}
+
+		cursor = nextCursor
+
+		if cursor == 0 {
+			break
+		}
+	}
+
+	return nil
+}
+
+func (cs *RedisCacheService) Exists(key string) (bool, error) {
+	count, err := cs.rdb.Exists(cs.ctx, key).Result()
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
