@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 	"user-management-api/internal/db/sqlc"
@@ -181,6 +182,11 @@ func (us *userService) CreateUsers(ctx *gin.Context, input sqlc.CreateUserParams
 		return sqlc.User{}, utils.WrapError("failed to create a new user", utils.ErrCodeInternal, err)
 	}
 
+	// Clear cache redis
+	if err := us.cache.Clear("users:*"); err != nil {
+		log.Printf("Failed to clear cache: %v", err)
+	}
+
 	return user, nil
 }
 
@@ -206,6 +212,11 @@ func (us *userService) UpdateUser(ctx *gin.Context, input sqlc.UpdateUserParams)
 		return sqlc.User{}, utils.WrapError("failed to update user", utils.ErrCodeInternal, err)
 	}
 
+	// Clear cache redis
+	if err := us.cache.Clear("users:*"); err != nil {
+		log.Printf("Failed to clear cache: %v", err)
+	}
+
 	return updatedUser, nil
 }
 
@@ -218,6 +229,11 @@ func (us *userService) SoftDeleteUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.Us
 			return sqlc.User{}, utils.NewError("user not found", utils.ErrCodeNotFound)
 		}
 		return sqlc.User{}, utils.WrapError("failed to delete user", utils.ErrCodeInternal, err)
+	}
+
+	// Clear cache redis
+	if err := us.cache.Clear("users:*"); err != nil {
+		log.Printf("Failed to clear cache: %v", err)
 	}
 
 	return softDeleteUser, nil
@@ -234,6 +250,11 @@ func (us *userService) RestoreUser(ctx *gin.Context, uuid uuid.UUID) (sqlc.User,
 		return sqlc.User{}, utils.WrapError("failed to restore user", utils.ErrCodeInternal, err)
 	}
 
+	// Clear cache redis
+	if err := us.cache.Clear("users:*"); err != nil {
+		log.Printf("Failed to clear cache: %v", err)
+	}
+
 	return restoreUser, nil
 }
 
@@ -246,6 +267,11 @@ func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) error {
 			return utils.NewError("user not found or not marked as delete for permenent removal", utils.ErrCodeNotFound)
 		}
 		return utils.WrapError("failed to restore user", utils.ErrCodeInternal, err)
+	}
+
+	// Clear cache redis
+	if err := us.cache.Clear("users:*"); err != nil {
+		log.Printf("Failed to clear cache: %v", err)
 	}
 
 	return nil
