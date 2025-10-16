@@ -1,6 +1,11 @@
 package config
 
-import "user-management-api/internal/utils"
+import (
+	"time"
+	"user-management-api/internal/utils"
+
+	"github.com/redis/go-redis/v9"
+)
 
 type RedisConfig struct {
 	Addr     string
@@ -16,4 +21,18 @@ func NewRedisConfig() {
 		Password: utils.GetEnv("REDIS_PASSWORD", ""),
 		DB:       utils.GetIntEnv("REDIS_DB", 0),
 	}
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:         cfg.Addr,
+		Username:     cfg.Username,
+		Password:     cfg.Password,
+		DB:           cfg.DB,
+		PoolSize:     20,
+		MinIdleConns: 5,
+		DialTimeout:  5 * time.Second,
+		ReadTimeout:  3 * time.Second,
+		WriteTimeout: 3 * time.Second,
+	})
+
+	return rdb
 }
