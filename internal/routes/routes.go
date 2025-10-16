@@ -19,8 +19,8 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	rateLimiterLogger := utils.NewLoggerWithPath("../../internal/logs/rate_limiter.log", "warning")
 
 	r.Use(
+		// middleware.CORSMiddleware(),
 		middleware.RateLimiterMiddleware(rateLimiterLogger),
-		middleware.CORSMiddleware(),
 		middleware.TraceMiddleware(),
 		middleware.AuthMiddleware(),
 		middleware.LoggerMiddleware(httpLogger),
@@ -35,4 +35,11 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	for _, route := range routes {
 		route.Register(v1api)
 	}
+
+	r.NoRoute(func(ctx *gin.Context) {
+		ctx.JSON(404, gin.H{
+			"error": "Not found",
+			"path":  ctx.Request.URL.Path,
+		})
+	})
 }
