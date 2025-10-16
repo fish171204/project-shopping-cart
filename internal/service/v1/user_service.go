@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 	"user-management-api/internal/db/sqlc"
@@ -91,6 +90,18 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort string, page, limit int32, deleted bool) ([]sqlc.User, int32, error) {
 	context := ctx.Request.Context()
 
+	/** Get Cache Redis **/
+	cacheKey := us.generateCacheKey(search, orderBy, sort, page, limit, deleted)
+
+	var cacheData struct {
+		Users []sqlc.User `json:"users"`
+		Total int32       `json:"total"`
+	}
+
+	if err := us.cache.Get(cacheKey, &cacheData); err == nil && cacheData.Users != nil {
+		return cacheData.Users, cacheData.Total, nil
+	}
+
 	if sort == "" {
 		sort = "desc"
 	}
@@ -110,22 +121,6 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 
 	offset := (page - 1) * limit
 
-	/** Get Cache Redis **/
-	// Create unique cache key based on parameters
-	cacheKey := fmt.Sprintf("getAllUsersV2_%s_%s_%s_%d_%d_%t", search, orderBy, sort, page, limit, deleted)
-
-	var cacheData struct {
-		Users []sqlc.User `json:"users"`
-		Total int32       `json:"total"`
-	}
-
-	if err := us.cache.Get(cacheKey, &cacheData); err == nil && cacheData.Users != nil {
-		log.Println("Jump into cache getAllUsersV2")
-		return cacheData.Users, cacheData.Total, nil
-	}
-
-	log.Println("Get from Database")
-
 	users, err := us.repo.GetAllV2(context, search, orderBy, sort, limit, offset, deleted)
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
@@ -144,7 +139,7 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 		Users: users,
 		Total: int32(total),
 	}
-	us.cache.Set(cacheKey, cacheData, 5*time.Second)
+	us.cache.Set(cacheKey, cacheData, 10*time.Minute)
 
 	return users, int32(total), nil
 }
