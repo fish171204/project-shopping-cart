@@ -1,6 +1,8 @@
 package config
 
 import (
+	"context"
+	"log"
 	"time"
 	"user-management-api/internal/utils"
 
@@ -14,7 +16,7 @@ type RedisConfig struct {
 	DB       int
 }
 
-func NewRedisConfig() {
+func NewRedisConfig() *redis.Client {
 	cfg := RedisConfig{
 		Addr:     utils.GetEnv("REDIS_ADDR", "localhost:6379"),
 		Username: utils.GetEnv("REDIS_USER", ""),
@@ -22,7 +24,7 @@ func NewRedisConfig() {
 		DB:       utils.GetIntEnv("REDIS_DB", 0),
 	}
 
-	rdb := redis.NewClient(&redis.Options{
+	client := redis.NewClient(&redis.Options{
 		Addr:         cfg.Addr,
 		Username:     cfg.Username,
 		Password:     cfg.Password,
@@ -34,5 +36,13 @@ func NewRedisConfig() {
 		WriteTimeout: 3 * time.Second,
 	})
 
-	return rdb
+	ctx := context.Background()
+	_, err := client.Ping(ctx).Result()
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+
+	log.Println("🍺 Connected Redis")
+
+	return client
 }
