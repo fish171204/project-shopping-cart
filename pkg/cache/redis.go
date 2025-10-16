@@ -20,8 +20,18 @@ func NewRedisCacheService(rdb *redis.Client) *RedisCacheService {
 	}
 }
 
-func (cs *RedisCacheService) Get() {
+func (cs *RedisCacheService) Get(key string, dest any) error {
+	data, err := cs.rdb.Get(cs.ctx, key).Result()
 
+	if err == redis.Nil {
+		return err
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal([]byte(data), dest)
 }
 
 func (cs *RedisCacheService) Set(key string, value any, ttl time.Duration) error {
