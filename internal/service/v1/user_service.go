@@ -3,6 +3,7 @@ package v1service
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
@@ -51,7 +52,15 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 
 	offset := (page - 1) * limit
 
-	/** Cache Redis **/
+	/** Get Cache Redis **/
+	var cacheData struct {
+		Users []sqlc.User `json:"users"`
+		Total int32       `json:"total"`
+	}
+
+	if err := us.cache.Get("getAllUsers", &cacheData); err == nil && cacheData.Users != nil {
+		return cacheData.Users, cacheData.Total, nil
+	}
 
 	users, err := us.repo.GetAll(context, search, orderBy, sort, limit, offset)
 	if err != nil {
@@ -64,14 +73,14 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 	}
 
 	// Create cache data
-	cacheData := struct {
+	cacheData = struct {
 		Users []sqlc.User `json:"users"`
 		Total int32       `json:"total"`
 	}{
 		Users: users,
 		Total: int32(total),
 	}
-	us.cache.Set("getAllUsers", cacheData, 5*time.Minute)
+	us.cache.Set("getAllUsers", cacheData, 5*time.Second)
 
 	return users, int32(total), nil
 }
@@ -99,6 +108,19 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 
 	offset := (page - 1) * limit
 
+	/** Get Cache Redis **/
+	var cacheData struct {
+		Users []sqlc.User `json:"users"`
+		Total int32       `json:"total"`
+	}
+
+	if err := us.cache.Get("getAllUsers", &cacheData); err == nil && cacheData.Users != nil {
+		log.Println("Jump into cache getAllUsers")
+		return cacheData.Users, cacheData.Total, nil
+	}
+
+	log.Println("Get from Database")
+
 	users, err := us.repo.GetAllV2(context, search, orderBy, sort, limit, offset, deleted)
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
@@ -108,6 +130,16 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
 	}
+
+	// Create cache data
+	cacheData = struct {
+		Users []sqlc.User `json:"users"`
+		Total int32       `json:"total"`
+	}{
+		Users: users,
+		Total: int32(total),
+	}
+	us.cache.Set("getAllUsers", cacheData, 5*time.Second)
 
 	return users, int32(total), nil
 }
