@@ -39,5 +39,5 @@ func (cs *RedisCacheService) Set(key string, value any, ttl time.Duration) error
 	if err != nil {
 		return err
 	}
-	return cs.rdb.Set(cs.ctx, key, data, 0).Err()
+	return cs.rdb.Set(cs.ctx, key, data, ttl).Err()
 }
