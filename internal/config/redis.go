@@ -16,7 +16,7 @@ type RedisConfig struct {
 	DB       int
 }
 
-func NewRedisConfig() *redis.Client {
+func NewRedisClient() *redis.Client {
 	cfg := RedisConfig{
 		Addr:     utils.GetEnv("REDIS_ADDR", "localhost:6379"),
 		Username: utils.GetEnv("REDIS_USER", ""),
