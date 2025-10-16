@@ -3,7 +3,9 @@ package v1service
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
+	"strings"
 	"time"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
@@ -109,13 +111,16 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 	offset := (page - 1) * limit
 
 	/** Get Cache Redis **/
+	// Create unique cache key based on parameters
+	cacheKey := fmt.Sprintf("getAllUsersV2_%s_%s_%s_%d_%d_%t", search, orderBy, sort, page, limit, deleted)
+
 	var cacheData struct {
 		Users []sqlc.User `json:"users"`
 		Total int32       `json:"total"`
 	}
 
-	if err := us.cache.Get("getAllUsers", &cacheData); err == nil && cacheData.Users != nil {
-		log.Println("Jump into cache getAllUsers")
+	if err := us.cache.Get(cacheKey, &cacheData); err == nil && cacheData.Users != nil {
+		log.Println("Jump into cache getAllUsersV2")
 		return cacheData.Users, cacheData.Total, nil
 	}
 
@@ -139,7 +144,7 @@ func (us *userService) GetAllUsersV2(ctx *gin.Context, search, orderBy, sort str
 		Users: users,
 		Total: int32(total),
 	}
-	us.cache.Set("getAllUsers", cacheData, 5*time.Second)
+	us.cache.Set(cacheKey, cacheData, 5*time.Second)
 
 	return users, int32(total), nil
 }
@@ -249,4 +254,23 @@ func (us *userService) DeleteUser(ctx *gin.Context, uuid uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (us *userService) generateCacheKey(search, orderBy, sort string, page, limit int32, deleted bool) string {
+	search = strings.TrimSpace(search)
+	if search == "" {
+		search = "none"
+	}
+
+	orderBy = strings.TrimSpace(orderBy)
+	if orderBy == "" {
+		orderBy = "user_created_at"
+	}
+
+	sort = strings.ToLower(strings.TrimSpace(sort))
+	if sort == "" {
+		sort = "desc"
+	}
+
+	return fmt.Sprintf("users:%s:%s:%s:%d:%d:%t", search, orderBy, sort, page, limit, deleted)
 }
