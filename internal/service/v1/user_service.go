@@ -3,6 +3,7 @@ package v1service
 import (
 	"database/sql"
 	"errors"
+	"time"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
@@ -63,6 +64,14 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 	}
 
 	// Create cache data
+	cacheData := struct {
+		Users []sqlc.User `json:"users"`
+		Total int32       `json:"total"`
+	}{
+		Users: users,
+		Total: int32(total),
+	}
+	us.cache.Set("getAllUsers", cacheData, 5*time.Minute)
 
 	return users, int32(total), nil
 }
