@@ -6,6 +6,7 @@ import (
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
+	"user-management-api/pkg/cache"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -16,13 +17,13 @@ import (
 
 type userService struct {
 	repo  repository.UserRepository
-	cache *redis.Client
+	cache *cache.RedisCacheService
 }
 
 func NewUserService(repo repository.UserRepository, redisClient *redis.Client) UserService {
 	return &userService{
 		repo:  repo,
-		cache: redisClient,
+		cache: cache.NewRedisCacheService(redisClient),
 	}
 }
 
@@ -49,6 +50,8 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 
 	offset := (page - 1) * limit
 
+	/** Cache Redis **/
+
 	users, err := us.repo.GetAll(context, search, orderBy, sort, limit, offset)
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to fetch users", utils.ErrCodeInternal, err)
@@ -58,6 +61,8 @@ func (us *userService) GetAllUsers(ctx *gin.Context, search, orderBy, sort strin
 	if err != nil {
 		return []sqlc.User{}, 0, utils.WrapError("failed to count users", utils.ErrCodeInternal, err)
 	}
+
+	// Create cache data
 
 	return users, int32(total), nil
 }
