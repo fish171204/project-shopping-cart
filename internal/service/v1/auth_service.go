@@ -21,26 +21,26 @@ func NewAuthService(repo repository.UserRepository, tokenService auth.TokenServi
 	}
 }
 
-func (as *authService) Login(ctx *gin.Context, email, password string) (string, error) {
+func (as *authService) Login(ctx *gin.Context, email, password string) (string, int, error) {
 	context := ctx.Request.Context()
 
 	email = utils.NormalizeString(email)
 	user, err := as.userRepo.GetByEmail(context, email)
 	if err != nil {
-		return "", utils.NewError("Invalid email or password", utils.ErrCodeUnauthorized)
+		return "", 0, utils.NewError("Invalid email or password", utils.ErrCodeUnauthorized)
 	}
 
 	// Compare hashed password in database with pass input
 	if err := bcrypt.CompareHashAndPassword([]byte(user.UserPassword), []byte(password)); err != nil {
-		return "", utils.NewError("Invalid email or password", utils.ErrCodeUnauthorized)
+		return "", 0, utils.NewError("Invalid email or password", utils.ErrCodeUnauthorized)
 	}
 
 	accessToken, err := as.tokenService.GenerateAccessToken(user)
 	if err != nil {
-		return "", utils.WrapError("Unable to create access token", utils.ErrCodeInternal, err)
+		return "", 0, utils.WrapError("Unable to create access token", utils.ErrCodeInternal, err)
 	}
 
-	return accessToken, nil
+	return accessToken, int(auth.AccessTokenTTL.Seconds()), nil
 }
 
 func (as *authService) Logout(ctx *gin.Context) error {

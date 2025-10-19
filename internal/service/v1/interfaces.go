@@ -22,6 +22,6 @@ type UserService interface {
 }
 
 type AuthService interface {
-	Login(ctx *gin.Context, email, password string) (string, error)
+	Login(ctx *gin.Context, email, password string) (string, int, error)
 	Logout(ctx *gin.Context) error
 }
