@@ -48,15 +48,15 @@ func WrapError(message string, code ErrorCode, err error) error {
 }
 
 func ResponseError(ctx *gin.Context, err error) {
-	if appError, ok := err.(*AppError); ok {
-		status := httpStatusFromCode(appError.Code)
+	if appErr, ok := err.(*AppError); ok {
+		status := httpStatusFromCode(appErr.Code)
 		response := gin.H{
-			"error": CapitalizeFirst(appError.Message),
-			"code":  appError.Code,
+			"error": CapitalizeFirst(appErr.Message),
+			"code":  appErr.Code,
 		}
 
-		if appError.Err != nil {
-			response["detail"] = appError.Err.Error()
+		if appErr.Err != nil {
+			response["detail"] = appErr.Err.Error()
 		}
 
 		ctx.JSON(status, response)
@@ -80,6 +80,7 @@ func ResponseSuccess(ctx *gin.Context, status int, message string, data ...any) 
 			if p, exists := m["pagination"]; exists {
 				resp.Pagination = p
 			}
+
 			if d, exists := m["data"]; exists {
 				resp.Data = d
 			} else {
