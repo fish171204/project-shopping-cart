@@ -2,6 +2,7 @@ package v1service
 
 import (
 	"user-management-api/internal/repository"
+	"user-management-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,9 @@ func NewAuthService(repo repository.UserRepository) AuthService {
 }
 
 func (as *authService) Login(ctx *gin.Context, email, password string) error {
+	context := ctx.Request.Context()
+
+	email = utils.NormalizeString(email)
 
 	return nil
 }
