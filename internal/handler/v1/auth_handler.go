@@ -30,6 +30,7 @@ func (ah *AuthHandler) Login(ctx *gin.Context) {
 	err := ah.service.Login(ctx, input.Email, input.Password)
 	if err != nil {
 		utils.ResponseError(ctx, err)
+		return
 	}
 
 	utils.ResponseSuccess(ctx, http.StatusOK, "Login successfully")
