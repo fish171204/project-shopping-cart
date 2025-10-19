@@ -6,20 +6,17 @@ import (
 	v1service "user-management-api/internal/service/v1"
 	"user-management-api/internal/utils"
 	"user-management-api/internal/validation"
-	"user-management-api/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
-	service      v1service.AuthService
-	tokenService auth.TokenService
+	service v1service.AuthService
 }
 
-func NewAuthHandler(service v1service.AuthService, tokenService auth.TokenService) *AuthHandler {
+func NewAuthHandler(service v1service.AuthService) *AuthHandler {
 	return &AuthHandler{
-		service:      service,
-		tokenService: tokenService,
+		service: service,
 	}
 }
 
