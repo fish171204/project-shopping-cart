@@ -1,7 +1,11 @@
 package v1handler
 
 import (
+	"net/http"
+	v1dto "user-management-api/internal/dto/v1"
 	v1service "user-management-api/internal/service/v1"
+	"user-management-api/internal/utils"
+	"user-management-api/internal/validation"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,9 +21,21 @@ func NewAuthHandler(service v1service.AuthService) *AuthHandler {
 }
 
 func (ah *AuthHandler) Login(ctx *gin.Context) {
+	var input v1dto.LoginInput
+	if err := ctx.ShouldBindQuery(&input); err != nil {
+		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
 
+	err := ah.service.Login(ctx, input.Email, input.Password)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+	}
+
+	utils.ResponseSuccess(ctx, http.StatusOK, "Login successfully")
 }
 
 func (ah *AuthHandler) Logout(ctx *gin.Context) {
+	utils.ResponseSuccess(ctx, http.StatusOK, "Logout successfully")
 
 }
