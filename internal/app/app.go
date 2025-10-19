@@ -13,6 +13,7 @@ import (
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/routes"
 	"user-management-api/internal/validation"
+	"user-management-api/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -46,6 +47,7 @@ func NewApplication(cfg *config.Config) *Application {
 	}
 
 	redisClient := config.NewRedisClient()
+	tokenService := auth.NewJWTService()
 
 	ctx := &ModuleContext{
 		DB:    db.DB,
@@ -54,7 +56,7 @@ func NewApplication(cfg *config.Config) *Application {
 
 	modules := []Module{
 		NewUserModule(ctx),
-		NewAuthModule(ctx),
+		NewAuthModule(ctx, tokenService),
 	}
 
 	routes.RegisterRoutes(r, getModuleRoutes(modules)...)
