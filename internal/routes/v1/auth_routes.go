@@ -1,0 +1,25 @@
+package v1routes
+
+import (
+	v1handler "user-management-api/internal/handler/v1"
+
+	"github.com/gin-gonic/gin"
+)
+
+type AuthRoutes struct {
+	handler *v1handler.AuthHandler
+}
+
+func NewNewAuthRoutes(handler *v1handler.AuthHandler) *AuthRoutes {
+	return &AuthRoutes{
+		handler: handler,
+	}
+}
+
+func (ar *AuthRoutes) Register(r *gin.RouterGroup) {
+	auth := r.Group("/auth")
+	{
+		auth.POST("", ar.handler.Login)
+		auth.POST("", ar.handler.Logout)
+	}
+}
