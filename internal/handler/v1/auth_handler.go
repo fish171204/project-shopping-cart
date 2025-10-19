@@ -22,7 +22,7 @@ func NewAuthHandler(service v1service.AuthService) *AuthHandler {
 
 func (ah *AuthHandler) Login(ctx *gin.Context) {
 	var input v1dto.LoginInput
-	if err := ctx.ShouldBindQuery(&input); err != nil {
+	if err := ctx.ShouldBindJSON(&input); err != nil {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
 	}
