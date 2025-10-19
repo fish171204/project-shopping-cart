@@ -134,6 +134,15 @@ func (ur *SqlUserRepository) GetByUuid(ctx context.Context, uuid uuid.UUID) (sql
 	return user, nil
 }
 
+func (ur *SqlUserRepository) GetByEmail(ctx context.Context, email string) (sqlc.User, error) {
+	user, err := ur.db.GetUserByEmail(ctx, email)
+	if err != nil {
+		return sqlc.User{}, err
+	}
+
+	return user, nil
+}
+
 func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string, deleted bool) (int64, error) {
 	total, err := ur.db.CountUsers(ctx, sqlc.CountUsersParams{
 		Search:  search,
@@ -145,8 +154,6 @@ func (ur *SqlUserRepository) CountUsers(ctx context.Context, search string, dele
 
 	return total, nil
 }
-
-func (ur *SqlUserRepository) FindByEmail(email string) {}
 
 // POST
 func (ur *SqlUserRepository) Create(ctx context.Context, input sqlc.CreateUserParams) (sqlc.User, error) {
