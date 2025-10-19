@@ -27,7 +27,7 @@ func (ah *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	err := ah.service.Login(ctx, input.Email, input.Password)
+	accessToken, err := ah.service.Login(ctx, input.Email, input.Password)
 	if err != nil {
 		utils.ResponseError(ctx, err)
 		return
