@@ -89,3 +89,6 @@ config.yml
 
 # HTML test files
 index.html
+
+# JWT files (contains sensitive logic)
+pkg/auth/jwt.go
