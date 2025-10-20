@@ -3,20 +3,40 @@ package middleware
 import (
 	"net/http"
 	"strings"
+	"user-management-api/pkg/auth"
 
 	"github.com/gin-gonic/gin"
 )
+
+var (
+	jwtService auth.TokenService
+)
+
+func InitAuthMiddleware(service auth.TokenService) {
+	jwtService = service
+}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.GetHeader("Authorization")
 		if authHeader == "" || strings.HasPrefix(authHeader, "Bearer ") {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Authorization header missing or invalid",
+				"error": "Authorization header missing or invalid (1)",
 			})
+
+			return
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+		_, _, err := jwtService.ParseToken(tokenString)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "Authorization header missing or invalid (2)",
+			})
+
+			return
+		}
 
 		ctx.Next()
 	}
