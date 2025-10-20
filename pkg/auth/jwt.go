@@ -76,3 +76,20 @@ func (js *JWTService) GenerateAccessToken(user sqlc.User) (string, error) {
 func (js *JWTService) GenerateRefreshToken() {
 
 }
+
+func (js *JWTService) ParseToken(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
+		return jwtSecret, nil
+	})
+
+	if err != nil || !token.Valid {
+		return nil, nil, utils.NewError("Invalid token", utils.ErrCodeUnauthorized)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, nil, utils.NewError("Invalid claims", utils.ErrCodeUnauthorized)
+	}
+
+	return token, claims, nil
+}
