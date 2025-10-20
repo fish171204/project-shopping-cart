@@ -21,7 +21,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		authHeader := ctx.GetHeader("Authorization")
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Authorization header missing or invalid (1)",
+				"error": "Authorization header missing or invalid",
 			})
 
 			return
@@ -32,7 +32,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		_, _, err := jwtService.ParseToken(tokenString)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Authorization header missing or invalid (2)",
+				"error": "Authorization header missing or invalid",
 			})
 
 			return
@@ -41,7 +41,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		payload, err := jwtService.DecryptAccessTokenPayload(tokenString)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Authorization header missing or invalid (3)",
+				"error": "Authorization header missing or invalid",
 			})
 
 			return

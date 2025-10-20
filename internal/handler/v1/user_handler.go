@@ -1,7 +1,6 @@
 package v1handler
 
 import (
-	"log"
 	"net/http"
 	v1dto "user-management-api/internal/dto/v1"
 	v1service "user-management-api/internal/service/v1"
@@ -49,9 +48,6 @@ func (uh *UserHandler) GetUserByUUID(ctx *gin.Context) {
 		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
 		return
 	}
-
-	userEmail, _ := ctx.Get("user_uuid")
-	log.Printf("-=-=-=-=-=-= FROM Auth: %s", userEmail)
 
 	userUuid, err := uuid.Parse(params.Uuid)
 	if err != nil {
