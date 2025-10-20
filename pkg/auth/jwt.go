@@ -48,6 +48,9 @@ func (js *JWTService) GenerateAccessToken(user sqlc.User) (string, error) {
 	}
 
 	encrypted, err := utils.EncryptAES(rawData, jwtEncryptKey)
+	if err != nil {
+		return "", err
+	}
 
 	// claims := &Claims{
 	// 	RegisteredClaims: jwt.RegisteredClaims{
