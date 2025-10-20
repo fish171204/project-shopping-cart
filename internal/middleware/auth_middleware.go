@@ -16,6 +16,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			})
 		}
 
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
 		ctx.Next()
 	}
 }
