@@ -28,7 +28,7 @@ const (
 	AccessTokenTTL = 15 * time.Minute
 )
 
-func NewJWTService() *JWTService {
+func NewJWTService() TokenService {
 	if len(jwtSecret) == 0 {
 		panic("JWT_SECRET environment variable is required and cannot be empty")
 	}
