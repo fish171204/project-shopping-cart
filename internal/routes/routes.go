@@ -2,6 +2,7 @@ package routes
 
 import (
 	"user-management-api/internal/middleware"
+	v1routes "user-management-api/internal/routes/v1"
 	"user-management-api/internal/utils"
 
 	"github.com/gin-contrib/gzip"
@@ -18,22 +19,33 @@ func RegisterRoutes(r *gin.Engine, routes ...Route) {
 	recoveryLogger := utils.NewLoggerWithPath("../../internal/logs/recovery.log", "warning")
 	rateLimiterLogger := utils.NewLoggerWithPath("../../internal/logs/rate_limiter.log", "warning")
 
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
+
 	r.Use(
 		// middleware.CORSMiddleware(),
 		middleware.RateLimiterMiddleware(rateLimiterLogger),
 		middleware.TraceMiddleware(),
-		middleware.AuthMiddleware(),
 		middleware.LoggerMiddleware(httpLogger),
 		middleware.RecoveryMiddleware(recoveryLogger),
 		middleware.ApiKeyMiddleware(),
 	)
 
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
-
 	v1api := r.Group("/api/v1")
 
+	protected := v1api.Group("")
+	protected.Use(
+		middleware.AuthMiddleware(),
+	)
+
 	for _, route := range routes {
-		route.Register(v1api)
+		switch route.(type) {
+		case *v1routes.AuthRoutes:
+			// Public endpoints (e.g., /api/v1/login & logout)
+			route.Register(v1api)
+		default:
+			// Protected endpoints (e.g., /api/v1/user, /api/v1/dashboard, ...)
+			route.Register(protected)
+		}
 	}
 
 	r.NoRoute(func(ctx *gin.Context) {
