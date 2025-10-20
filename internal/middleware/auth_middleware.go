@@ -19,7 +19,7 @@ func InitAuthMiddleware(service auth.TokenService) {
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authHeader := ctx.GetHeader("Authorization")
-		if authHeader == "" || strings.HasPrefix(authHeader, "Bearer ") {
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "Authorization header missing or invalid (1)",
 			})
@@ -48,8 +48,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		ctx.Set("user_uuid", payload.UserUUID)
-		ctx.Set("user_uuid", payload.Email)
-		ctx.Set("user_uuid", payload.Role)
+		ctx.Set("user_email", payload.Email)
+		ctx.Set("user_role", payload.Role)
 
 		ctx.Next()
 	}
