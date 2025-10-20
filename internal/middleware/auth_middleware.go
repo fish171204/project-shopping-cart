@@ -38,6 +38,19 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		payload, err := jwtService.DecryptAccessTokenPayload(tokenString)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "Authorization header missing or invalid (3)",
+			})
+
+			return
+		}
+
+		ctx.Set("user_uuid", payload.UserUUID)
+		ctx.Set("user_uuid", payload.Email)
+		ctx.Set("user_uuid", payload.Role)
+
 		ctx.Next()
 	}
 }
