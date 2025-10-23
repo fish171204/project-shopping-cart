@@ -42,7 +42,11 @@ func (as *authService) Login(ctx *gin.Context, email, password string) (string, 
 
 	refreshToken, err := as.tokenService.GenerateRefreshToken(user)
 	if err != nil {
-		return "", "", 0, utils.WrapError("Unable to create access token", utils.ErrCodeInternal, err)
+		return "", "", 0, utils.WrapError("Unable to create refresh token", utils.ErrCodeInternal, err)
+	}
+
+	if err := as.tokenService.StoreRefreshToken(refreshToken); err != nil {
+		return "", "", 0, utils.WrapError("Cannot save refresh token", utils.ErrCodeInternal, err)
 	}
 
 	return accessToken, refreshToken.Token, int(auth.AccessTokenTTL.Seconds()), nil
