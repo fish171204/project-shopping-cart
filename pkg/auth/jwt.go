@@ -32,7 +32,8 @@ var (
 )
 
 const (
-	AccessTokenTTL = 15 * time.Minute
+	AccessTokenTTL  = 15 * time.Minute
+	RefreshTokenTTL = 7 * 24 * time.Hour
 )
 
 func NewJWTService() TokenService {
