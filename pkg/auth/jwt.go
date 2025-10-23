@@ -7,12 +7,14 @@ import (
 	"time"
 	"user-management-api/internal/db/sqlc"
 	"user-management-api/internal/utils"
+	"user-management-api/pkg/cache"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
 type JWTService struct {
+	cache *cache.RedisCacheService
 }
 
 type EncryptedPayload struct {
@@ -38,11 +40,13 @@ const (
 	RefreshTokenTTL = 7 * 24 * time.Hour
 )
 
-func NewJWTService() TokenService {
+func NewJWTService(cache *cache.RedisCacheService) TokenService {
 	if len(jwtSecret) == 0 {
 		panic("JWT_SECRET environment variable is required and cannot be empty")
 	}
-	return &JWTService{}
+	return &JWTService{
+		cache: cache,
+	}
 }
 
 /************** Access Token ***************/
