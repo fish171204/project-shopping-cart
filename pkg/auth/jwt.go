@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"time"
 	"user-management-api/internal/db/sqlc"
@@ -22,7 +24,7 @@ type EncryptedPayload struct {
 type RefreshToken struct {
 	Token     string    `json:"token"`
 	UserUUID  string    `json:"user_uuid"`
-	ExpiresAt time.Time `json:"expires_at"`
+	ExpiresAt time.Time `json:"expires_at"` // TTL
 	Revoked   bool      `json:"revoked"`
 }
 
@@ -82,10 +84,6 @@ func (js *JWTService) GenerateAccessToken(user sqlc.User) (string, error) {
 	return token.SignedString(jwtSecret)
 }
 
-func (js *JWTService) GenerateRefreshToken() {
-
-}
-
 func (js *JWTService) ParseToken(tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
 		return jwtSecret, nil
@@ -128,3 +126,20 @@ func (js *JWTService) DecryptAccessTokenPayload(tokenString string) (*EncryptedP
 }
 
 /************** Refresh Token ***************/
+func (js *JWTService) GenerateRefreshToken(user sqlc.User) (RefreshToken, error) {
+
+	// Tạo mã random dưới dạng bytes
+	tokenBytes := make([]byte, 32)
+	if _, err := rand.Read(tokenBytes); err != nil {
+		return RefreshToken{}, err
+	}
+
+	token := base64.URLEncoding.EncodeToString(tokenBytes)
+
+	return RefreshToken{
+		Token:     token,
+		UserUUID:  user.UserUuid.String(),
+		ExpiresAt: time.Now().Add(RefreshTokenTTL),
+		Revoked:   false,
+	}, nil
+}

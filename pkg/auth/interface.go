@@ -8,7 +8,7 @@ import (
 
 type TokenService interface {
 	GenerateAccessToken(user sqlc.User) (string, error)
-	GenerateRefreshToken()
+	GenerateRefreshToken(user sqlc.User) (RefreshToken, error)
 	ParseToken(tokenString string) (*jwt.Token, jwt.MapClaims, error)
 	DecryptAccessTokenPayload(tokenString string) (*EncryptedPayload, error)
 }
