@@ -147,3 +147,8 @@ func (js *JWTService) GenerateRefreshToken(user sqlc.User) (RefreshToken, error)
 		Revoked:   false,
 	}, nil
 }
+
+func (js *JWTService) StoreRefreshToken(token RefreshToken) error {
+	cacheKey := "refresh_token:" + token.Token
+	return js.cache.Set(cacheKey, token, RefreshTokenTTL)
+}
