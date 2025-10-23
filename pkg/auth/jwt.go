@@ -19,6 +19,13 @@ type EncryptedPayload struct {
 	Role     int32  `json:"role"`
 }
 
+type RefreshToken struct {
+	Token     string    `json:"token"`
+	UserUUID  string    `json:"user_uuid"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Revoked   bool      `json:"revoked"`
+}
+
 var (
 	jwtSecret     = []byte(utils.GetEnv("JWT_SECRET", ""))
 	jwtEncryptKey = []byte(utils.GetEnv("JWT_ENCRYPT_KEY", ""))
@@ -35,6 +42,7 @@ func NewJWTService() TokenService {
 	return &JWTService{}
 }
 
+/************** Access Token ***************/
 func (js *JWTService) GenerateAccessToken(user sqlc.User) (string, error) {
 	payload := &EncryptedPayload{
 		UserUUID: user.UserUuid.String(),
@@ -117,3 +125,5 @@ func (js *JWTService) DecryptAccessTokenPayload(tokenString string) (*EncryptedP
 
 	return &payload, nil
 }
+
+/************** Refresh Token ***************/
