@@ -75,8 +75,27 @@ func (as *authService) Logout(ctx *gin.Context, refreshToken string) error {
 		expUnix, _ := claims["exp"].(float64)
 		exp := time.Unix(int64(expUnix), 0)
 		key := "blacklist:" + jti
+
+		// TTL - đảm bảo không âm
 		ttl := time.Until(exp)
-		as.cache.Set(key, "revoked", ttl)
+		if ttl <= 0 {
+			ttl = time.Minute * 15
+		}
+
+		err := as.cache.Set(key, "revoked", ttl)
+		if err != nil {
+			return utils.WrapError("Cannot blacklist token", utils.ErrCodeInternal, err)
+		}
+	}
+
+	_, err = as.tokenService.ValidateRefreshToken(refreshToken)
+	if err != nil {
+		return utils.NewError("Refresh token is invalid or revoked", utils.ErrCodeUnauthorized)
+	}
+
+	if err := as.tokenService.RevokeRefreshToken(refreshToken); err != nil {
+		return utils.WrapError("Unable to revoke token", utils.ErrCodeInternal, err)
+
 	}
 
 	return nil
