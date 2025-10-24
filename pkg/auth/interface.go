@@ -12,4 +12,5 @@ type TokenService interface {
 	ParseToken(tokenString string) (*jwt.Token, jwt.MapClaims, error)
 	DecryptAccessTokenPayload(tokenString string) (*EncryptedPayload, error)
 	StoreRefreshToken(token RefreshToken) error
+	ValidateRefreshToken(token string) (RefreshToken, error)
 }

@@ -152,3 +152,15 @@ func (js *JWTService) StoreRefreshToken(token RefreshToken) error {
 	cacheKey := "refresh_token:" + token.Token
 	return js.cache.Set(cacheKey, token, RefreshTokenTTL)
 }
+
+func (js *JWTService) ValidateRefreshToken(token string) (RefreshToken, error) {
+	cacheKey := "refresh_token:" + token
+
+	var refreshToken RefreshToken
+	err := js.cache.Get(cacheKey, refreshToken)
+	if err != nil || refreshToken.Revoked == true || refreshToken.ExpiresAt.Before(time.Now()) {
+		return RefreshToken{}, utils.WrapError("Cannot get refresh token", utils.ErrCodeInternal, err)
+	}
+
+	return refreshToken, nil
+}
