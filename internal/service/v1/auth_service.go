@@ -86,8 +86,12 @@ func (as *authService) RefreshToken(ctx *gin.Context, refreshTokenString string)
 	}
 
 	// Vô hiệu hóa refresh token cũ
+	if err := as.tokenService.RevokeRefreshToken(refreshTokenString); err != nil {
+		return "", "", 0, utils.WrapError("Unable to revoke token", utils.ErrCodeInternal, err)
 
-	// Lưu refresh token mới
+	}
+
+	// Lưu refresh token mới vào Redis
 	if err := as.tokenService.StoreRefreshToken(refreshToken); err != nil {
 		return "", "", 0, utils.WrapError("Cannot save refresh token", utils.ErrCodeInternal, err)
 	}

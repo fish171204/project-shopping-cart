@@ -54,7 +54,17 @@ func (ah *AuthHandler) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	ah.service.RefreshToken(ctx, input.RefreshToken)
+	accessToken, refreshToken, expiresIn, err := ah.service.RefreshToken(ctx, input.RefreshToken)
+	if err != nil {
+		utils.ResponseError(ctx, err)
+		return
+	}
 
-	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully")
+	response := v1dto.LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresIn:    expiresIn,
+	}
+
+	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully", response)
 }
