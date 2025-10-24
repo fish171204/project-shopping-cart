@@ -1,6 +1,7 @@
 package v1service
 
 import (
+	"strings"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
 	"user-management-api/pkg/auth"
@@ -54,6 +55,19 @@ func (as *authService) Login(ctx *gin.Context, email, password string) (string, 
 }
 
 func (as *authService) Logout(ctx *gin.Context, refreshToken string) error {
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		return utils.NewError("Missing Authorization header", utils.ErrCodeUnauthorized)
+	}
+
+	accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+
+	_, claims, err := as.tokenService.ParseToken(accessToken)
+	if err != nil {
+		return utils.NewError("Invalid access token", utils.ErrCodeUnauthorized)
+
+	}
+
 	return nil
 }
 
