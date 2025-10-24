@@ -2,6 +2,7 @@ package v1service
 
 import (
 	"strings"
+	"time"
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
 	"user-management-api/pkg/auth"
@@ -65,7 +66,12 @@ func (as *authService) Logout(ctx *gin.Context, refreshToken string) error {
 	_, claims, err := as.tokenService.ParseToken(accessToken)
 	if err != nil {
 		return utils.NewError("Invalid access token", utils.ErrCodeUnauthorized)
+	}
 
+	if jti, ok := claims["jti"].(string); ok {
+		expUnix, _ := claims["exp"].(float64)
+		exp := time.Unix(int64(expUnix), 0)
+		key := "blacklist:" + jti
 	}
 
 	return nil
