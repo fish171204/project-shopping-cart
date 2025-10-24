@@ -20,6 +20,8 @@ func NewRedisCacheService(rdb *redis.Client) RedisCacheService {
 	}
 }
 
+// Get retrieves a cached value from Redis by the specified key.
+// The data is unmarshaled from JSON into the provided destination struct.
 func (cs *redisCacheService) Get(key string, dest any) error {
 	data, err := cs.rdb.Get(cs.ctx, key).Result()
 
@@ -34,6 +36,8 @@ func (cs *redisCacheService) Get(key string, dest any) error {
 	return json.Unmarshal([]byte(data), dest)
 }
 
+// Set stores a given value in Redis under the specified key with a TTL (Time-To-Live).
+// The value is marshaled into JSON before being saved.
 func (cs *redisCacheService) Set(key string, value any, ttl time.Duration) error {
 	data, err := json.Marshal(value)
 	if err != nil {
@@ -42,6 +46,8 @@ func (cs *redisCacheService) Set(key string, value any, ttl time.Duration) error
 	return cs.rdb.Set(cs.ctx, key, data, ttl).Err()
 }
 
+// Clear deletes all keys from Redis that match the given pattern.
+// It uses the SCAN command to iterate through keys safely without blocking Redis.
 func (cs *redisCacheService) Clear(pattern string) error {
 	cursor := uint64(0)
 	for {
@@ -64,6 +70,7 @@ func (cs *redisCacheService) Clear(pattern string) error {
 	return nil
 }
 
+// Exists checks whether a specific key exists in Redis.
 func (cs *redisCacheService) Exists(key string) (bool, error) {
 	count, err := cs.rdb.Exists(cs.ctx, key).Result()
 	if err != nil {

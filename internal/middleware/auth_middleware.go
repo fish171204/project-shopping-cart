@@ -4,16 +4,19 @@ import (
 	"net/http"
 	"strings"
 	"user-management-api/pkg/auth"
+	"user-management-api/pkg/cache"
 
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	jwtService auth.TokenService
+	jwtService   auth.TokenService
+	cacheService cache.RedisCacheService
 )
 
-func InitAuthMiddleware(service auth.TokenService) {
+func InitAuthMiddleware(service auth.TokenService, cache cache.RedisCacheService) {
 	jwtService = service
+	cacheService = cache
 }
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -40,6 +43,14 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		if jti, ok := claims["jti"].(string); ok {
 			key := "blacklist:" + jti
+			exists, err := cacheService.Exists(key)
+			if err == nil && exists {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"error": "Token revoked",
+				})
+
+				return
+			}
 		}
 
 		payload, err := jwtService.DecryptAccessTokenPayload(tokenString)
