@@ -63,3 +63,12 @@ func (cs *redisCacheService) Clear(pattern string) error {
 
 	return nil
 }
+
+func (cs *redisCacheService) Exists(key string) (bool, error) {
+	count, err := cs.rdb.Exists(cs.ctx, key).Result()
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
