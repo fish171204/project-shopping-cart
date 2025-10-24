@@ -13,4 +13,5 @@ type TokenService interface {
 	DecryptAccessTokenPayload(tokenString string) (*EncryptedPayload, error)
 	StoreRefreshToken(token RefreshToken) error
 	ValidateRefreshToken(token string) (RefreshToken, error)
+	RevokeRefreshToken(token string) error
 }
