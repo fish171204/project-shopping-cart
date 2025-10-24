@@ -48,6 +48,11 @@ func (ah *AuthHandler) Logout(ctx *gin.Context) {
 }
 
 func (ah *AuthHandler) RefreshToken(ctx *gin.Context) {
-	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully")
+	var input v1dto.RefreshTokenInput
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		utils.ResponseValidator(ctx, validation.HandleValidationErrors(err))
+		return
+	}
 
+	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully")
 }
