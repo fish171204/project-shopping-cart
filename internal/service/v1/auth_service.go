@@ -53,7 +53,7 @@ func (as *authService) Login(ctx *gin.Context, email, password string) (string, 
 	return accessToken, refreshToken.Token, int(auth.AccessTokenTTL.Seconds()), nil
 }
 
-func (as *authService) Logout(ctx *gin.Context) error {
+func (as *authService) Logout(ctx *gin.Context, refreshToken string) error {
 	return nil
 }
 
