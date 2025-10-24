@@ -55,3 +55,9 @@ func (as *authService) Login(ctx *gin.Context, email, password string) (string, 
 func (as *authService) Logout(ctx *gin.Context) error {
 	return nil
 }
+
+func (as *authService) RefreshToken(ctx *gin.Context, token string) (string, string, int, error) {
+	context := ctx.Request.Context()
+
+	return nil
+}

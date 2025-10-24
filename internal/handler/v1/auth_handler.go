@@ -54,5 +54,7 @@ func (ah *AuthHandler) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
+	ah.service.RefreshToken(ctx, input.RefreshToken)
+
 	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully")
 }
