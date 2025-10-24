@@ -46,3 +46,8 @@ func (ah *AuthHandler) Logout(ctx *gin.Context) {
 	utils.ResponseSuccess(ctx, http.StatusOK, "Logout successfully")
 
 }
+
+func (ah *AuthHandler) RefreshToken(ctx *gin.Context) {
+	utils.ResponseSuccess(ctx, http.StatusOK, "Refresh token generate successfully")
+
+}
