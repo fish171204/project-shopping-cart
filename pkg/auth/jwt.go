@@ -157,7 +157,7 @@ func (js *JWTService) ValidateRefreshToken(token string) (RefreshToken, error) {
 	cacheKey := "refresh_token:" + token
 
 	var refreshToken RefreshToken
-	err := js.cache.Get(cacheKey, refreshToken)
+	err := js.cache.Get(cacheKey, &refreshToken)
 	// Kiểm tra đã hủy chưa, hết hạn chưa refreshToken.Revoked == true
 	if err != nil || refreshToken.Revoked || refreshToken.ExpiresAt.Before(time.Now()) {
 		return RefreshToken{}, utils.WrapError("Cannot get refresh token", utils.ErrCodeInternal, err)
@@ -171,7 +171,7 @@ func (js *JWTService) RevokeRefreshToken(token string) error {
 	cacheKey := "refresh_token:" + token
 
 	var refreshToken RefreshToken
-	err := js.cache.Get(cacheKey, refreshToken)
+	err := js.cache.Get(cacheKey, &refreshToken)
 	if err != nil {
 		return utils.WrapError("Cannot get refresh token", utils.ErrCodeInternal, err)
 	}
