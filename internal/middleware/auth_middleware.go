@@ -29,13 +29,17 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		_, _, err := jwtService.ParseToken(tokenString)
+		_, claims, err := jwtService.ParseToken(tokenString)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "Authorization header missing or invalid",
 			})
 
 			return
+		}
+
+		if jti, ok := claims["jti"].(string); ok {
+			key := "blacklist:" + jti
 		}
 
 		payload, err := jwtService.DecryptAccessTokenPayload(tokenString)
