@@ -6,6 +6,7 @@ import (
 	"user-management-api/internal/repository"
 	"user-management-api/internal/utils"
 	"user-management-api/pkg/auth"
+	"user-management-api/pkg/cache"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -15,12 +16,14 @@ import (
 type authService struct {
 	userRepo     repository.UserRepository
 	tokenService auth.TokenService
+	cache        cache.RedisCacheService
 }
 
-func NewAuthService(repo repository.UserRepository, tokenService auth.TokenService) AuthService {
+func NewAuthService(repo repository.UserRepository, tokenService auth.TokenService, cache cache.RedisCacheService) AuthService {
 	return &authService{
 		userRepo:     repo,
 		tokenService: tokenService,
+		cache:        cache,
 	}
 }
 
@@ -72,6 +75,8 @@ func (as *authService) Logout(ctx *gin.Context, refreshToken string) error {
 		expUnix, _ := claims["exp"].(float64)
 		exp := time.Unix(int64(expUnix), 0)
 		key := "blacklist:" + jti
+		ttl := time.Until(exp)
+		as.cache.Set(key, "revoked", ttl)
 	}
 
 	return nil
